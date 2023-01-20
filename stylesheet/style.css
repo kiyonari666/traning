@@ -124,13 +124,14 @@ header .listBackButton {
     text-decoration: none;
     margin-bottom: 10px;
     margin-left: 30px;
-    padding: 2px 5px;
+    padding: 5px 20px;
     background-color: #fff;
     color: #000;
     border: solid 2px #dcdcdc;
     box-shadow:  1px 1px 1px #dcdcdc(0, 255, 234, 0.234);
     border-radius: 5px;
     letter-spacing: 2px;
+    font-weight: bold
 }
 
 /* コンテナトップ*/
@@ -157,9 +158,6 @@ header .listBackButton {
     background-color: #fff;
     border: solid 1px #dcdcdc;
     border-radius: 5px;
-}
-.listContainerTop .selectbox {
-    padding: 8px 10px;
 }
 
 /* コンテナメイン*/
