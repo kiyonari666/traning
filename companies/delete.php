@@ -60,7 +60,8 @@ if (isset($_POST['id'])) {
                         <th><p>住所</p></th>
                         <td>
                             <span class="title">郵便番号</span>
-                            <span class="deleteText">〒<?php echo h(substr_replace($res['postal_code'], '-', 3, 0)); ?></span><br>
+                            <?php $postalCode = h($res['postal_code']); ?>
+                            <span class="deleteText">〒<?php echo h(addHyphen($postalCode)); ?></span><br>
                         </td> 
                     </tr>
                     <tr class="addressRowLayout">
