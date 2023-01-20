@@ -109,7 +109,8 @@ $res = $stmt->fetchAll();
                             <td><p><?php echo h($record['manager_name']); ?></p></td>
                             <td><p><?php echo h($record['phone_number']); ?></p></td>                    
                             <td>
-                                <p>〒<?php echo h(substr_replace($record['postal_code'], '-', 3, 0)); ?></p>
+                                <?php $postalCode = h($record['postal_code']); ?>
+                                <p>〒<?php echo h(addHyphen($postalCode)); ?></p>
                                 <p><?php echo h($record['address']); ?></p>
                             </td>
                             <td><p><?php echo h($record['mail_address']); ?></p></td>
