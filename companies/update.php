@@ -72,7 +72,7 @@ if (!empty($postData)) {
                         <th><p>住所</p></th>
                         <td>
                             <span class="title">郵便番号</span>
-                            <input type="text" name="postal_code" value="〒<?php echo h(substr_replace($res['postal_code'], '-', 3, 0)); ?>"><br>
+                            <input type="text" name="postal_code" value="<?php echo h($res['postal_code']); ?>"><br>
                         </td>
                     </tr>
                     <tr class="addressRowLayout">
