@@ -23,7 +23,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 $stmt->execute();
 $tableNum = $stmt->fetch();
 $maxPage = ceil($tableNum['count(*)'] / 10);
-var_dump($maxPage);
+
 // quotationテーブルデータ取得部
 $start = ($page - 1) * 10;
 
