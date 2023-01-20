@@ -2,6 +2,7 @@
 require_once('./../const/status.php');
 require_once('./../config/database.php');
 require_once('./../function/common.php');
+require_once('./../function/quote.php');
 
 // ページング用、ページ番号取得部
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -128,8 +129,12 @@ $resCmpanies = $stmt->fetch();
                         <tr>
                             <td><p><?php echo h($record['no']); ?></p></td>
                             <td><p><?php echo h($record['title']); ?></p></td>
-                            <td><p><?php echo h($resCmpanies['manager_name']); ?></p></td>                           
-                            <td><p><?php  echo number_format(h($record['total'])); ?>円</p></td>             
+                            <td><p><?php echo h($resCmpanies['manager_name']); ?></p></td>
+
+                            <?php $total = h($record['total']); ?>
+                            <td><p><?php echo h(thousandsSeparator($total)); ?>円</p></td>
+                            
+
                             <td><p><?php echo h($record['validity_period']); ?></p></td>
                             <td><p><?php echo h($record['due_date']); ?></p></td>
                             <td><p><?php echo STATUS_LIST[h($record['status'])]; ?></p></td>
