@@ -2,6 +2,7 @@
 require_once('./../const/status.php');
 require_once('./../config/database.php');
 require_once('./../function/common.php');
+require_once('./../function/quote.php');
 
 $listPath = './list.php?id=' . $_GET['company_id'];
 
@@ -57,7 +58,8 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>金額</p></th>
-                        <td><p><?php echo number_format(h($res['total'])); ?></p></td>
+                        <?php $total = h($res['total']); ?>
+                        <td><p><?php echo h(thousandsSeparator($total)); ?>円</p></td>
                     </tr>
                     <tr>
                         <th><p>見積書有効期限</p></th>
