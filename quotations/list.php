@@ -18,12 +18,12 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $stmt->bindValue(':status', '%'. $_GET['search'].'%', PDO::PARAM_STR);
+    $stmt->bindValue(':status', $_GET['search'], PDO::PARAM_STR);
 }
 $stmt->execute();
 $tableNum = $stmt->fetch();
 $maxPage = ceil($tableNum['count(*)'] / 10);
-
+var_dump($maxPage);
 // quotationテーブルデータ取得部
 $start = ($page - 1) * 10;
 
@@ -89,9 +89,8 @@ $resCmpanies = $stmt->fetch();
                 <!-- 社名検索フォーム     -->               
                 <form action="" method="get">
                     <input type="hidden" name="id" value="<?php echo h($_GET['id']) ?>">
-                    <select name="search" class="selectbox">
-                        <?php foreach (STATUS_LIST as $key => $val) : ?>
-                            <option value="" selected hidden>選択してください</option>               
+                    <select name="search" class="searchWind">
+                        <?php foreach (STATUS_LIST as $key => $val) : ?>           
                             <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                         <?php endforeach; ?> 
                     </select>
