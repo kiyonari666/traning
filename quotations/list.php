@@ -16,8 +16,9 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $textValue = [
         $_GET['search'] => STATUS_LIST[$_GET['search']]
     ];
+    $statusKey = array_keys($textValue);
 }
-var_dump($textValue);
+
 // ページング用、最大ページ数取得部
 $sql = "select count(*) from quotations where company_id=:id";
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -98,7 +99,9 @@ $resCmpanies = $stmt->fetch();
                 <form action="" method="get">
                     <input type="hidden" name="id" value="<?php echo h($_GET['id']) ?>">
                     <select name="search" class="searchWind">
-                       
+                        <?php if (!empty($textValue)) : ?>
+                            <option value="" selected hidden><?php echo $textValue[$statusKey[0]]; ?></option>
+                        <?php endif; ?>
                         <?php foreach (STATUS_LIST as $key => $val) : ?>         
                             <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                         <?php endforeach; ?> 
