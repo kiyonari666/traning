@@ -57,7 +57,7 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>金額</p></th>
-                        <td><p><?php echo number_format(h($res['total'])); ?>円</p></td>
+                        <td><p><?php echo number_format(h($res['total'])); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>見積書有効期限</p></th>
