@@ -44,8 +44,8 @@ if (!empty($search)) {
 $sql .= " order by id limit :start,10";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $stmt->bindValue(':name', '%'. $_GET['search'].'%', PDO::PARAM_STR);
+if (!empty($search)) {
+    $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
 }
 $stmt->execute();
 $res = $stmt->fetchAll();
