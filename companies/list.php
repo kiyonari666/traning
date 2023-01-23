@@ -88,10 +88,28 @@ $res = $stmt->fetchAll();
             </div>
 
             <div class="listContainerMain">
+                
+                <!-- レコードリストソート分岐 -->
+                <?php $listOrder = $_GET['listOrder']; ?>
+                <?php if (!empty($listOrder) && $listOrder === "asc") : ?>
+                    <?php asort($res); ?>
+                <?php elseif ($listOrder === "desc") : ?>
+                    <?php arsort($res); ?> 
+                <?php endif; ?>
+
                 <!-- レコードリスト出力部 -->     
                 <table>
                     <tr>
-                        <th><p>会社番号</p></th>
+                        <th class="sortFrom">
+                            <p>会社番号</p>
+                            <form action="">
+                                <select name="listOrder">
+                                    <option value="asc">昇順</option>
+                                    <option value="desc">降順</option>
+                                </select>
+                                <input type="submit" value="OK">
+                            </form>
+                        </th>
                         <th><p>会社名</p></th>            
                         <th><p>担当者名</p></th>            
                         <th><p>電話番号</p></th>            
