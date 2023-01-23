@@ -57,8 +57,8 @@ if (!empty($listOrder) && $listOrder === 'desc') {
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $stmt->bindValue(':status', $_GET['search'], PDO::PARAM_STR);
+if (!empty($search)) {
+    $stmt->bindValue(':status', $search, PDO::PARAM_STR);
 }
 $stmt->execute();
 $res = $stmt->fetchAll();
