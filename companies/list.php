@@ -3,52 +3,35 @@ require_once('./../config/database.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
-// ページング用、ページ番号取得部
-$page = 1;
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = $_GET['page'];
-}
-
-// 検索ウィンドウにワードを残す処理
-$textValue = "";
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $textValue = $_GET['search'];
-}
-
-// ページング用、最大ページ数取得部
-$sql = "select count(*) from companies";
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $sql .= " where name like :name";
-}
-$stmt = $db->prepare($sql);
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $stmt->bindValue(':name', '%'. $_GET['search'].'%', PDO::PARAM_STR);
-}
-$stmt->execute();
-$tableNum = $stmt->fetch();
-$maxPage = ceil($tableNum['count(*)'] / 10);
-
-
-// companiesテーブルデータ取得部
-// ※　.=でSQLを追加するとき、.= " " 左記のように半角スペース忘れない
-$start = ($page - 1) * 10;
-
-$search = "";
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$sql = "select * from companies";
-if (!empty($search)) {
+// 通常表示・検索表示のレコード取得
+$sql = 'select * from companies';
+$search = $_GET['search'] ?? '';
+if ($search !== '') {
     $sql .= " where name like :name";
 }
 $sql .= " order by id limit :start,10";
 $stmt = $db->prepare($sql);
+if ($search !== '') {
+    $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
+}
+$page = $_GET['page'] ?? 1;
+$start = ($page - 1) * 10;
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-if (!empty($search)) {
+$stmt->execute();
+$res = $stmt->fetchAll();
+
+// 通常表示・検索表示のページ数取得
+$sql = "select count(*) from companies";
+if ($search !== '') {
+    $sql .= " where name like :name";
+}
+$stmt = $db->prepare($sql);
+if ($search !== '') {
     $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
 }
 $stmt->execute();
-$res = $stmt->fetchAll();
+$maxPage = $stmt->fetch();
+$maxPage = ceil($maxPage['count(*)'] / 10);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -65,15 +48,13 @@ $res = $stmt->fetchAll();
         <header>
             <div class="headerLeft">
                 <h1>会社一覧</h1>
-                <?php if (!empty($search)) : ?>
-                    <p>検索結果</p>
-                <?php endif; ?>
+                <?php if ($search !== '') : ?>
+                    <p>検索結果</p>                
             </div>
-            <div class="headerRight">
-                <?php if (!empty($search)) : ?>
-                    <a  class="listBackButton" href="./list.php">一覧へ戻る</a>
+                    <div class="headerRight">                
+                        <a  class="listBackButton" href="./list.php">一覧へ戻る</a>
+                    </div>
                 <?php endif; ?>
-            </div>
         </header>
 
         <div class="listContainer">
@@ -82,10 +63,14 @@ $res = $stmt->fetchAll();
                 <a class="newCreateButton" href="./create.php">新規登録</a>
                 <!-- 社名検索フォーム     -->
                 <form action="" method="get">
-                    <input type="text" class="searchWind" name="search" maxlength="225" value="<?php echo h($textValue) ?>">
-                    <?php if (!empty($_GET['listOrder']) && isset($_GET['listOrder'])) : ?>
-                        <input type="hidden" name="listOrder" value="<?php echo $_GET['listOrder']; ?>">
-                    <?php endif; ?>  
+                    <input type="text" class="searchWind" name="search" maxlength="225" value="<?php echo h($search) ?>">
+                    <?php $recordSort = $_GET['recordSort'] ?? ''; ?>
+                    <?php if ($recordSort !== '') : ?>
+                        <input type="hidden" name="recordSort" value="<?php echo $recordSort; ?>">
+                    <?php endif; ?> 
+                    <?php if (isset($page)) : ?>
+                        <input type="hidden" name="page" value="<?php echo $page; ?>">
+                    <?php endif; ?> 
                     <input type="submit" class="searchSubmitButton" value="検索">
                 </form>               
             </div>
@@ -93,13 +78,10 @@ $res = $stmt->fetchAll();
             <div class="listContainerMain">
                 
                 <!-- レコードリストソート分岐 -->
-                <?php if (isset($_GET['listOrder']) && !empty($_GET['listOrder'])) : ?>
-                    <?php $listOrder = $_GET['listOrder']; ?>
-                <?php endif; ?>
-                <?php if (!empty($listOrder) && $listOrder === "asc") : ?>
-                    <?php asort($res); ?>
-                <?php elseif (!empty($listOrder) && $listOrder === "desc") : ?>
+                <?php if ($recordSort === "desc") : ?>
                     <?php arsort($res); ?> 
+                <?php else : ?>
+                        <?php asort($res); ?>
                 <?php endif; ?>
 
                 <!-- レコードリスト出力部 -->     
@@ -107,20 +89,24 @@ $res = $stmt->fetchAll();
                     <tr>
                         <th class="sortFrom">
                             <p>会社番号</p>
+                            <!-- レコードソート実装部 -->
                             <form action="">
-                                <select name="listOrder">
-                                    <?php if (!empty($listOrder) && $listOrder === "asc") : ?>
-                                        <option hidden><?php echo "昇順"; ?></option>
-                                    <?php elseif (!empty($listOrder) && $listOrder === "desc") : ?>
+                                <select name="recordSort" onchange="this.form.submit()">
+                                    <!-- セレクト初期値 降順で検索時は降順表示、それ以外は降順表示                                 -->
+                                    <?php if ($recordSort === "desc") : ?>
                                         <option hidden><?php echo "降順"; ?></option>
+                                    <?php else : ?>
+                                            <option hidden><?php echo "昇順"; ?></option>
                                     <?php endif; ?>
                                     <option value="asc">昇順</option>
                                     <option value="desc">降順</option>
                                 </select>
-                                <?php if (!empty($search)) : ?>
+                                <?php if ($search !== '') : ?>
                                     <input type="hidden" name="search" value="<?php echo $search; ?>">
                                 <?php endif; ?>
-                                <input type="submit" value="OK">
+                                <?php if (isset($page)) : ?>
+                                    <input type="hidden" name="page" value="<?php echo $page; ?>">
+                                <?php endif; ?>
                             </form>
                         </th>
                         <th><p>会社名</p></th>            
@@ -156,24 +142,24 @@ $res = $stmt->fetchAll();
 
             <div class="listContainerBottom">
                 <!-- ページ移動リンク -->
-                <?php if (!empty($search) && !empty($listOrder) && $page >= 2) : ?>
-                    <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>&search=<?php echo h($search); ?>&listOrder=<?php echo h($listOrder); ?>">&larr; 前へ</a>
-                <?php elseif (!empty($search) && $page >= 2) : ?>
+                <?php if ($search !== '' && $recordSort !== ''  && $page >= 2) : ?>
+                    <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>&search=<?php echo h($search); ?>&recordSort=<?php echo h($recordSort); ?>">&larr; 前へ</a>
+                <?php elseif ($search !== ''  && $page >= 2) : ?>
                     <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>&search=<?php echo h($search); ?>">&larr; 前へ</a>
-                <?php elseif (!empty($listOrder) && $page >= 2) : ?>
-                    <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>&listOrder=<?php echo h($listOrder); ?>">&larr; 前へ</a>    
+                <?php elseif ($recordSort !== ''  && $page >= 2) : ?>
+                    <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>&recordSort=<?php echo h($recordSort); ?>">&larr; 前へ</a>    
                 <?php elseif ($page >= 2) : ?>
                     <a class="fowardButton" href="./list.php?page=<?php echo h($page - 1); ?>">&larr; 前へ</a>
                 <?php endif; ?>
 
-                <?php if (!empty($search) && !empty($listOrder) && $page < $maxPage) : ?>
-                    <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>&search=<?php echo h($search); ?>&listOrder=<?php echo h($listOrder); ?>">次へ &rarr;</a>    
-                <?php elseif (!empty($search) && $page < $maxPage) : ?>
+                <?php if ($search !== '' && $recordSort !== '' && $page < $maxPage) : ?>
+                    <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>&search=<?php echo h($search); ?>&recordSort=<?php echo h($recordSort); ?>">次へ &rarr;</a>    
+                <?php elseif ($search !== ''  && $page < $maxPage) : ?>
                     <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>&search=<?php echo h($search); ?>">次へ &rarr;</a>    
-                <?php elseif (!empty($listOrder) && $page < $maxPage) : ?>
-                    <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>&listOrder=<?php echo h($listOrder); ?>">次へ &rarr;</a>    
+                <?php elseif ($recordSort !== ''  && $page < $maxPage) : ?>
+                    <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>&recordSort=<?php echo h($recordSort); ?>">次へ &rarr;</a>    
                 <?php elseif ($page < $maxPage) : ?>
-                        <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>">次へ &rarr;</a>
+                    <a  class="backButton" href="./list.php?page=<?php echo h($page + 1); ?>">次へ &rarr;</a>
                 <?php endif; ?>
             </div>            
         </div>
