@@ -190,7 +190,7 @@ header .listBackButton {
 }
 /* ソートセレクトボックス装飾 */
 .sortFrom p {
-    margin-top: 4px;
+    margin-top: 10px;
     margin-bottom: 2px;
 }
 .sortFrom select {
@@ -198,14 +198,6 @@ header .listBackButton {
     border:solid 1px #dcdcdc;
     margin-top: 5px;
     margin-left: 5px;
-}
-.sortFrom input {
-    background-color: #fff;
-    border: solid 1px #dcdcdc;
-    border-radius: 5px;
-    height: 22px;
-    margin-top: 2px;
-    margin-left: 2px;
 }
 
 /* コンテナボトム */
@@ -300,7 +292,7 @@ header .listBackButton {
 }
 /* 全テキストボックス装飾 */
 input[type="text"] {
-    margin-left: 10px;
+    margin-left: 5px;
     width: 94%;
     height: 40%;
     background-color: #f5f5f5;
@@ -318,29 +310,29 @@ input[type="text"] {
 }
 /* tdラベル装飾 */
 .addressRowLayout td .title {
-    margin-left: 10px;
+    margin-left: 5px;
     letter-spacing: 1px; 
 }
 /* 住所行セレクトボックス装飾 */
 .addressRowLayout td select {
     float: right;
-    margin-right: 10px;
-    width: 64%;
+    margin-right: 4px;
+    width: 66%;
     height: 40%;
 }
 /* 住所行テキストボックス装飾 */
 .addressRowLayout td input {
     float: right;
-    margin-right: 10px;
-    width: 74%;
+    margin-right: 5px;
+    width: 64%;
 }
-.deleteText {
+.rightText {
     float: right;
     margin-right: 10px;
 }
 /* 見積の作成・更新セレクトボックス装飾 */
 .selectbox {
-    margin-left: 10px;
+    margin-left: 5px;
     width: 96%;
     height: 40%;
 }
