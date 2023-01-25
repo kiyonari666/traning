@@ -6,6 +6,8 @@ require_once('./../function/company.php');
 // 通常表示・検索表示のレコード取得
 $sql = 'select * from companies';
 $search = $_GET['search'] ?? '';
+$page = $_GET['page'] ?? 1;
+$start = ($page - 1) * 10;
 if ($search !== '') {
     $sql .= " where name like :name";
 }
@@ -14,8 +16,6 @@ $stmt = $db->prepare($sql);
 if ($search !== '') {
     $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
 }
-$page = $_GET['page'] ?? 1;
-$start = ($page - 1) * 10;
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
@@ -49,12 +49,14 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
             <div class="headerLeft">
                 <h1>会社一覧</h1>
                 <?php if ($search !== '') : ?>
-                    <p>検索結果</p>                
-            </div>
-                    <div class="headerRight">                
-                        <a  class="listBackButton" href="./list.php">一覧へ戻る</a>
-                    </div>
+                    <p>検索結果</p>
+                <?php endif; ?>               
+            </div>          
+            <div class="headerRight">
+                <?php if ($search !== '') : ?>               
+                    <a  class="listBackButton" href="./list.php">一覧へ戻る</a>
                 <?php endif; ?>
+            </div>               
         </header>
 
         <div class="listContainer">
@@ -62,15 +64,12 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 <!-- 新規登録ボタン -->
                 <a class="newCreateButton" href="./create.php">新規登録</a>
                 <!-- 社名検索フォーム     -->
+                <?php $recordSort = $_GET['recordSort'] ?? ''; ?>
                 <form action="" method="get">
-                    <input type="text" class="searchWind" name="search" maxlength="225" value="<?php echo h($search) ?>">
-                    <?php $recordSort = $_GET['recordSort'] ?? ''; ?>
+                    <input type="text" class="searchWind" name="search" maxlength="225" value="<?php echo h($search); ?>">                  
                     <?php if ($recordSort !== '') : ?>
-                        <input type="hidden" name="recordSort" value="<?php echo $recordSort; ?>">
-                    <?php endif; ?> 
-                    <?php if (isset($page)) : ?>
-                        <input type="hidden" name="page" value="<?php echo $page; ?>">
-                    <?php endif; ?> 
+                        <input type="hidden" name="recordSort" value="<?php echo h($recordSort); ?>">
+                    <?php endif; ?>                                       
                     <input type="submit" class="searchSubmitButton" value="検索">
                 </form>               
             </div>
@@ -80,8 +79,6 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 <!-- レコードリストソート分岐 -->
                 <?php if ($recordSort === "desc") : ?>
                     <?php arsort($res); ?> 
-                <?php else : ?>
-                        <?php asort($res); ?>
                 <?php endif; ?>
 
                 <!-- レコードリスト出力部 -->     
@@ -102,11 +99,9 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                                     <option value="desc">降順</option>
                                 </select>
                                 <?php if ($search !== '') : ?>
-                                    <input type="hidden" name="search" value="<?php echo $search; ?>">
+                                    <input type="hidden" name="search" value="<?php echo h($search); ?>">
                                 <?php endif; ?>
-                                <?php if (isset($page)) : ?>
-                                    <input type="hidden" name="page" value="<?php echo $page; ?>">
-                                <?php endif; ?>
+                                <input type="hidden" name="page" value="<?php echo h($page); ?>">
                             </form>
                         </th>
                         <th><p>会社名</p></th>            
@@ -131,10 +126,10 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                                 <p><?php echo h($record['address']); ?></p>
                             </td>
                             <td><p><?php echo h($record['mail_address']); ?></p></td>
-                            <td class="tableCellCenter"><a href="./../quotations/list.php?id=<?php echo h($record['id']) ?>" class="estimateLink">見積一覧</a></td>
+                            <td class="tableCellCenter"><a href="./../quotations/list.php?companyId=<?php echo h($record['id']); ?>" class="estimateLink">見積一覧</a></td>
                             <td class="tableCellCenter"><a href="#" class="estimateLink">請求一覧</a></td>
-                            <td class="tableCellCenter"><a href="./update.php?id=<?php echo h($record['id']) ?>">編集</a></td>
-                            <td class="tableCellCenter"><a href="./delete.php?id=<?php echo h($record['id']) ?>">削除</a></td>                        
+                            <td class="tableCellCenter"><a href="./update.php?id=<?php echo h($record['id']); ?>">編集</a></td>
+                            <td class="tableCellCenter"><a href="./delete.php?id=<?php echo h($record['id']); ?>">削除</a></td>                        
                         </tr>
                     <?php endforeach; ?>    
                 </table>
