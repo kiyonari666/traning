@@ -61,21 +61,21 @@ if (isset($_POST['id'])) {
                         <td>
                             <span class="title">郵便番号</span>
                             <?php $postalCode = h($res['postal_code']); ?>
-                            <span class="deleteText">〒<?php echo h(addHyphen($postalCode)); ?></span><br>
+                            <span class="rightText">〒<?php echo h(addHyphen($postalCode)); ?></span><br>
                         </td> 
                     </tr>
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>                                
                             <span class="title">都道府県コード　</span>
-                            <span class="deleteText"><?php echo h($res['prefecture_code']); ?></span><br>
+                            <span class="rightText"><?php echo h($res['prefecture_code']); ?></span><br>
                         </td> 
                     </tr>
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>
                             <span class="title">住所</span>
-                            <span class="deleteText"><?php echo h($res['address']); ?></span><br>
+                            <span class="rightText"><?php echo h($res['address']); ?></span><br>
                         </td> 
                     </tr>                             
                     <!-- 住所行終 -->
@@ -85,7 +85,8 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>プレフィックス</p></th>
-                        <td><p><?php echo h($res['prefix']); ?></p></td>
+                        <?php $prefixCode = h($res['prefix']); ?>
+                        <td><p><?php echo h(addPrefix($prefixCode)); ?></p></td>
                     </tr>
                 </table>
                 <input type="hidden" name="id" value= "<?php echo h($res['id']); ?>">    
