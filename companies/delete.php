@@ -69,7 +69,7 @@ if (isset($_POST['id'])) {
                         <td>                                
                             <span class="title">都道府県コード　</span>
                             <span class="rightText"><?php echo h($res['prefecture_code']); ?></span><br>
-                        </td> 
+                        </td> 作った
                     </tr>
                     <tr class="addressRowLayout">
                         <th></th>    
