@@ -3,25 +3,21 @@ require_once('./../const/prefecture.php');
 require_once('./../config/database.php');
 require_once('./../function/company.php');
 
-
-// テーブルデータ挿入部
-$postData = $_POST;
-if (!empty($postData)) {
-    if (insertValidate($postData)) {
-        $sql = "insert into companies (name, manager_name, phone_number, postal_code,prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':name', $postData['name'], PDO::PARAM_STR);
-        $stmt->bindValue(':manager_name', $postData['manager_name'], PDO::PARAM_STR);
-        $stmt->bindValue(':phone_number', $postData['phone_number'], PDO::PARAM_STR);
-        $stmt->bindValue(':postal_code', $postData['postal_code'], PDO::PARAM_STR);
-        $stmt->bindValue(':prefecture_code', $postData['prefecture_code'], PDO::PARAM_STR);
-        $stmt->bindValue(':address', $postData['address'], PDO::PARAM_STR);
-        $stmt->bindValue(':mail_address', $postData['mail_address'], PDO::PARAM_STR);
-        $stmt->bindValue(':prefix', $postData['prefix'], PDO::PARAM_STR);
-        $stmt->execute();
-        header('Location: ./list.php');
-        exit();
-    }
+// DB挿入部
+if (!empty($_POST)) {
+    $sql = "insert into companies (name, manager_name, phone_number, postal_code,prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':name', $_POST['name'], PDO::PARAM_STR);
+    $stmt->bindValue(':manager_name', $_POST['manager_name'], PDO::PARAM_STR);
+    $stmt->bindValue(':phone_number', $_POST['phone_number'], PDO::PARAM_STR);
+    $stmt->bindValue(':postal_code', $_POST['postal_code'], PDO::PARAM_STR);
+    $stmt->bindValue(':prefecture_code', $_POST['prefecture_code'], PDO::PARAM_STR);
+    $stmt->bindValue(':address', $_POST['address'], PDO::PARAM_STR);
+    $stmt->bindValue(':mail_address', $_POST['mail_address'], PDO::PARAM_STR);
+    $stmt->bindValue(':prefix', $_POST['prefix'], PDO::PARAM_STR);
+    $stmt->execute();
+    header('Location: ./list.php');
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -43,7 +39,7 @@ if (!empty($postData)) {
 
         <div class="container">
             <!-- 新規登録フォーム -->
-            <form action="" method="post">
+            <form action="./createVali.php" method="post">
                 <table>
                     <tr>
                         <th><p>会社名</p></th>
