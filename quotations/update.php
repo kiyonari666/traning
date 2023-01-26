@@ -2,6 +2,7 @@
 require_once('./../const/status.php');
 require_once('./../config/database.php');
 require_once('./../function/common.php');
+require_once('./../function/quote.php');
 
 $listPath = './list.php?id=' . $_GET['company_id'];
 
@@ -52,7 +53,8 @@ if (!empty($postData)) {
                 <table>
                     <tr>
                         <th><p>見積番号</p></th>
-                        <td><p><?php echo h($res['no']); ?></p></td>
+                        <?php $prefixCode = h($res['no']); ?>
+                        <td><p><?php echo h(addPrefix($prefixCode)); ?></p></td>                        
                     </tr>
                     <tr>
                         <th><p>見積名</p></th>
