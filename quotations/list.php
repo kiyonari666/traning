@@ -84,7 +84,7 @@ $resCmpanies = $stmt->fetch();
             <div class="listContainerTop">
                 <!-- 新規登録ボタン -->
                 <a class="newCreateButton" href="./create.php?companyId=<?php echo h($companyId); ?>&name=<?php echo h($resCmpanies['name']); ?>">見積作成</a>
-                <!-- 社名検索フォーム     -->               
+                <!-- 検索フォーム     -->               
                 <form action="" method="get">                   
                     <select name="search" class="searchWind">
                         <?php if ($search !== '') : ?>
@@ -136,7 +136,8 @@ $resCmpanies = $stmt->fetch();
                     </tr>
                     <?php foreach ($res as $record) : ?>
                         <tr>
-                            <td><p><?php echo h($record['no']); ?></p></td>
+                            <?php $prefixCode = h($record['no']); ?>
+                            <td><p><?php echo h(addPrefix($prefixCode)); ?></p></td>           
                             <td><p><?php echo h($record['title']); ?></p></td>
                             <td><p><?php echo h($resCmpanies['manager_name']); ?></p></td>
                             <?php $total = h($record['total']); ?>
