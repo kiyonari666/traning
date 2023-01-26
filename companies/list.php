@@ -78,9 +78,21 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 
                 <!-- レコードリストソート分岐 -->
                 <?php if ($recordSort === "desc") : ?>
-                    <?php arsort($res); ?> 
+                    <!-- 関数使用 -->
+                    <?php krsort($res); ?>
+                    <!-- ソートアルゴリズム使用 -->
+                    <?php
+                    //for ($i = 0; $i < count($res); $i++) {
+                        //for ($j = 0; $j < count($res); $j++) {
+                            //if ($res[$j] < $res[$j + 1]) {
+                                //$temp = $res[$j + 1];
+                                //$res[$j + 1] = $res[$j];
+                                //$res[$j] = $temp;
+                            //}
+                        //}
+                    //}
+                    ?>    
                 <?php endif; ?>
-
                 <!-- レコードリスト出力部 -->     
                 <table>
                     <tr>
