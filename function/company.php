@@ -4,3 +4,8 @@ function addHyphen($postalCode)
 {
     return  substr_replace($postalCode, '-', 3, 0);
 }
+// プレフィックスに記号挿入用ファンクション
+function addPrefix($prefixCode)
+{
+    return  substr_replace($prefixCode, 'prefix-', 0, 0);
+}
