@@ -302,6 +302,13 @@ input[type="text"] {
 .container table tr {
     height: 68px;
 }
+/* バリテーションメッセージ */
+.container .valiError {
+    font-size: 2px;
+    font-weight: bold;
+    color: red;
+    margin-left: 10px;
+}
 /* 住所行 */
 /* 余計なボーダー消す */
 .addressRowLayout th, .addressRowLayout td {
