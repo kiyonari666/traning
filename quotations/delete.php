@@ -4,7 +4,7 @@ require_once('./../config/database.php');
 require_once('./../function/common.php');
 require_once('./../function/quote.php');
 
-$listPath = './list.php?id=' . $_GET['company_id'];
+$listPath = './list.php?companyId=' . $_GET['companyId'];
 
 // データ取得部
 $sql = "select * from quotations where id=:id";
@@ -37,7 +37,7 @@ if (isset($_POST['id'])) {
 
         <header>
             <h1 class="headerTitle">見積削除</h1>
-            <a href="./list.php?id=<?php echo $_GET['company_id']; ?>">戻る</a>
+            <a href="./list.php?companyId=<?php echo $_GET['companyId']; ?>">戻る</a>
         </header>
 
         <div class="container">
