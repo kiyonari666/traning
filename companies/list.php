@@ -79,18 +79,18 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 <!-- レコードリストソート分岐 -->
                 <?php if ($recordSort === "desc") : ?>
                     <!-- 関数使用 -->
-                    <?php krsort($res); ?>
+                    <?php //krsort($res); ?>
                     <!-- ソートアルゴリズム使用 -->
                     <?php
-                    //for ($i = 0; $i < count($res); $i++) {
-                        //for ($j = 0; $j < count($res); $j++) {
-                            //if ($res[$j] < $res[$j + 1]) {
-                                //$temp = $res[$j + 1];
-                                //$res[$j + 1] = $res[$j];
-                                //$res[$j] = $temp;
-                            //}
-                        //}
-                    //}
+                    for ($i = 0; $i < count($res); $i++) {
+                        for ($j = 0; $j < count($res) - 1; $j++) {
+                            if ($res[$j] < $res[$j + 1]) {
+                                $temp = $res[$j + 1];
+                                $res[$j + 1] = $res[$j];
+                                $res[$j] = $temp;
+                            }
+                        }
+                    }
                     ?>    
                 <?php endif; ?>
                 <!-- レコードリスト出力部 -->     
@@ -101,7 +101,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                             <!-- レコードソート実装部 -->
                             <form action="">
                                 <select name="recordSort" onchange="this.form.submit()">
-                                    <!-- セレクト初期値 降順で検索時は降順表示、それ以外は降順表示                                 -->
+                                    <!-- セレクト初期値 降順で検索時は降順表示、それ以外は降順表示-->
                                     <?php if ($recordSort === "desc") : ?>
                                         <option hidden><?php echo "降順"; ?></option>
                                     <?php else : ?>
