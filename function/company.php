@@ -7,5 +7,5 @@ function addHyphen($postalCode)
 // プレフィックスに記号挿入用ファンクション
 function addPrefix($prefixCode)
 {
-    return  substr_replace($prefixCode, 'prefix-', 0, 0);
+    return  substr_replace($prefixCode, '-', 8, 0);
 }
