@@ -3,7 +3,7 @@ require_once('./../const/status.php');
 require_once('./../config/database.php');
 require_once('./../function/company.php');
 
-$listPath = './list.php?id=' . $_GET['id'];
+$listPath = './list.php?companyId=' . $_GET['companyId'];
 
 // テーブルデータ挿入部
 $postData = $_POST;
@@ -37,7 +37,7 @@ if (!empty($postData)) {
 
         <header>
             <h1>見積作成</h1>
-            <a href="./list.php?id=<?php echo $_GET['id']; ?>">戻る</a>
+            <a href="./list.php?companyId=<?php echo $_GET['companyId']; ?>">戻る</a>
         </header>
 
         <div class="container">
