@@ -11,14 +11,33 @@ $start = ($page - 1) * 10;
 if ($search !== '') {
     $sql .= " where name like :name";
 }
-$sql .= " order by id limit :start,10";
+// $sql .= " order by id limit :start,10";
+$sql .= " order by id";
 $stmt = $db->prepare($sql);
 if ($search !== '') {
     $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
 }
-$stmt->bindValue(':start', $start, PDO::PARAM_INT);
+// $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
+
+//レコードリストソート分岐
+$recordSort = $_GET['recordSort'] ?? '';
+// var_dump($res);
+if ($recordSort === "desc") {
+    for ($i = 0; $i < count($res); $i++) {
+        for ($j = 0; $j < count($res) - 1; $j++) {
+            if ($res[$j] < $res[$j + 1]) {
+                $temp = $res[$j + 1];
+                $res[$j + 1] = $res[$j];
+                $res[$j] = $temp;
+            }
+        }
+    }
+}
+
+// 1ページに表示するレコード管理
+$records = array_splice($res, ($page - 1) * 10, 10);
 
 // 通常表示・検索表示のページ数取得
 $sql = "select count(*) from companies";
@@ -64,7 +83,6 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 <!-- 新規登録ボタン -->
                 <a class="newCreateButton" href="./create.php">新規登録</a>
                 <!-- 社名検索フォーム     -->
-                <?php $recordSort = $_GET['recordSort'] ?? ''; ?>
                 <form action="" method="get">
                     <input type="text" class="searchWind" name="search" maxlength="225" value="<?php echo h($search); ?>">                  
                     <?php if ($recordSort !== '') : ?>
@@ -75,24 +93,6 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
             </div>
 
             <div class="listContainerMain">
-                
-                <!-- レコードリストソート分岐 -->
-                <?php if ($recordSort === "desc") : ?>
-                    <!-- 関数使用 -->
-                    <?php //krsort($res); ?>
-                    <!-- ソートアルゴリズム使用 -->
-                    <?php
-                    for ($i = 0; $i < count($res); $i++) {
-                        for ($j = 0; $j < count($res) - 1; $j++) {
-                            if ($res[$j] < $res[$j + 1]) {
-                                $temp = $res[$j + 1];
-                                $res[$j + 1] = $res[$j];
-                                $res[$j] = $temp;
-                            }
-                        }
-                    }
-                    ?>    
-                <?php endif; ?>
                 <!-- レコードリスト出力部 -->     
                 <table>
                     <tr>
@@ -126,7 +126,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                         <th class="tableCellCenter"><p>編集</p></th>            
                         <th class="tableCellCenter"><p>削除</p></th>            
                     </tr>
-                    <?php foreach ($res as $record) : ?>
+                    <?php foreach ($records as $record) : ?>
                         <tr>
                             <td><p><?php echo h($record['id']); ?></p></td>
                             <td><p><?php echo h($record['name']); ?></p></td>
