@@ -69,7 +69,7 @@ if (isset($_POST['id'])) {
                         <td>                                
                             <span class="title">都道府県コード　</span>
                             <span class="rightText"><?php echo h($res['prefecture_code']); ?></span><br>
-                        </td> 作った
+                        </td>
                     </tr>
                     <tr class="addressRowLayout">
                         <th></th>    
@@ -85,8 +85,7 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>プレフィックス</p></th>
-                        <?php $prefixCode = h($res['prefix']); ?>
-                        <td><p><?php echo h(addPrefix($prefixCode)); ?></p></td>
+                        <td><p><?php echo h($res['prefix']); ?></p></td>
                     </tr>
                 </table>
                 <input type="hidden" name="id" value= "<?php echo h($res['id']); ?>">    
