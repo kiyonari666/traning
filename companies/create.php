@@ -3,6 +3,24 @@ require_once('./../const/prefecture.php');
 require_once('./../config/database.php');
 require_once('./../function/company.php');
 
+// プレフィックス重複バリテーション
+$sql = 'select prefix from companies';
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$res = $stmt->fetchAll();
+
+if (!empty($_POST)) {
+    foreach ($res as $val) {
+        $array[] = $val['prefix'] === $_POST['prefix'];
+    }
+    if (in_array(true, $array)) {
+        $duplication = '重複する番号は使用できません';
+        $_POST['prefix'] = '';
+    } else {
+        $duplication = '';
+    }
+}
+
 $values = [
     'name' => '',
     'manager_name' => '',
@@ -11,26 +29,34 @@ $values = [
     'prefecture_code' => '',
     'address' => '',
     'mail_address' => '',
-    'prefix' => '',
+    'prefix' => ''
 ];
 
 if (!empty($_POST)) {
     $values = $_POST;
     $errors = [];
     // 会社名バリテーション
-    if (empty($_POST['name']) || mb_strlen($_POST['name']) >= 64) {
+    if (empty($_POST['name'])) {
+        $errors['name'] = '必須入力項目です';
+    } elseif (mb_strlen($_POST['name']) > 64) {
         $errors['name'] = '64文字以内で入力して下さい';
     }
     //担当者名バリテーション
-    if (empty($_POST['manager_name']) || mb_strlen($_POST['manager_name']) >= 32) {
+    if (empty($_POST['manager_name'])) {
+        $errors['manager_name'] = '必須入力項目です';
+    } elseif (mb_strlen($_POST['manager_name']) > 32) {
         $errors['manager_name'] = '32文字以内で入力して下さい';
     }
     // 電話番号バリテーション
-    if (empty($_POST['phone_number']) || !preg_match('/^[0-9]{11}$/', $_POST['phone_number'])) {
+    if (empty($_POST['phone_number'])) {
+        $errors['phone_number'] = '必須入力項目です';
+    } elseif (!preg_match('/^[0-9]{11}$/', $_POST['phone_number'])) {
         $errors['phone_number'] = '半角整数のみ、ハイフンなしで入力して下さい';
     }
     // 郵便番号バリテーション
-    if (empty($_POST['postal_code']) || !preg_match('/^[0-9]{7}$/', $_POST['postal_code'])) {
+    if (empty($_POST['postal_code'])) {
+        $errors['postal_code'] = '必須入力項目です';
+    } elseif (!preg_match('/^[0-9]{7}$/', $_POST['postal_code'])) {
         $errors['postal_code'] = '半角整数のみ、ハイフンなしで入力して下さい';
     }
     // 都道府県コードバリテーション
@@ -38,16 +64,24 @@ if (!empty($_POST)) {
         $errors['prefecture_code'] = '都道府県を選んでください';
     }
     // 住所バリテーション
-    if (empty($_POST['address']) || mb_strlen($_POST['address']) >= 100) {
+    if (empty($_POST['address'])) {
+        $errors['address'] = '必須入力項目です';
+    } elseif (mb_strlen($_POST['address']) > 100) {
         $errors['address'] = '100文字以内で入力して下さい';
     }
     // メールアドレスバリテーション
-    if (empty($_POST['mail_address']) || !preg_match('/^[A-Za-z0-9]+\.*[\w\-]*\.*[A-Za-z0-9]+@+[A-Za-z0-9]+[\w\-]*\.+[A-Za-z]+\.*[A-Za-z]*$/', $_POST['mail_address'])) {
+    if (empty($_POST['mail_address'])) {
+        $errors['mail_address'] = '必須入力項目です';
+    } elseif (!preg_match('/^[A-Za-z0-9]+\.*[\w\-]*\.*[A-Za-z0-9]+@+[A-Za-z0-9]+[\w\-]*\.+[A-Za-z]+\.*[A-Za-z]*$/', $_POST['mail_address'])) {
         $errors['mail_address'] = '別のメールアドレスをお試しください';
     }
     // プレフィックスバリテーション
-    if (empty($_POST['prefix']) || mb_strlen($_POST['prefix']) >= 16 || !preg_match('/^[A-Za-z0-9]+$/', $_POST['prefix'])) {
-        $errors['prefix'] = '半角英数文字のみ、16文字以内で入力して下さい';
+    if (empty($_POST['prefix'])) {
+        $errors['prefix'] = '必須入力項目です';
+    } elseif (mb_strlen($_POST['prefix']) > 8) {
+        $errors['prefix'] = '8文字以内で入力して下さい';
+    } elseif (!preg_match('/^[A-Za-z0-9]+$/', $_POST['prefix'])) {
+        $errors['prefix'] = '半角英数文字のみで入力して下さい';
     }
 
 // DB挿入部
@@ -173,8 +207,11 @@ if (!empty($_POST)) {
                         <th><p>プレフィックス</p></th>
                         <td>
                             <input type="text" name="prefix" value="<?php echo $values['prefix']; ?>">                        
-                            <?php if (!empty($errors['prefix'])) : ?>
+                            <?php if (!empty($errors['prefix']) && empty($duplication)) : ?>
                                 <div class="valiError"><?php echo $errors['prefix']; ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($duplication)) : ?>
+                                <div class="valiError"><?php echo $duplication; ?></div>
                             <?php endif; ?>
                         </td>
                     </tr>
