@@ -5,7 +5,6 @@ require_once('./../function/company.php');
 
 // データ取得部
 $id = $_GET['id'];
-
 $sql = "select * from companies where id=:id";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -13,7 +12,7 @@ $stmt->execute();
 $res = $stmt->fetch();
 
      // レコード削除部
-if (isset($_POST['id'])) {
+if (!empty($_POST['id'])) {
     $sql = "delete from companies where id=:delete";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':delete', $_POST['id'], PDO::PARAM_INT);
