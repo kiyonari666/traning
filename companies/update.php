@@ -17,22 +17,21 @@ $res = $stmt->fetch();
  // レコード変更部
  $postData = $_POST;
 if (!empty($postData)) {
-    if (updateValidate($postData)) {
-        $sql = "update companies set name=:name, manager_name=:manager_name, phone_number=:phone_number, postal_code=:postal_code, prefecture_code=:prefecture_code, address=:address, mail_address=:mail_address, modified=NOW() where id=:id";
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':name', $postData['name'], PDO::PARAM_STR);
-        $stmt->bindValue(':manager_name', $postData['manager_name'], PDO::PARAM_STR);
-        $stmt->bindValue(':phone_number', $postData['phone_number'], PDO::PARAM_STR);
-        $stmt->bindValue(':postal_code', $postData['postal_code'], PDO::PARAM_STR);
-        $stmt->bindValue(':prefecture_code', $postData['prefecture_code'], PDO::PARAM_STR);
-        $stmt->bindValue(':address', $postData['address'], PDO::PARAM_STR);
-        $stmt->bindValue(':mail_address', $postData['mail_address'], PDO::PARAM_STR);
-        $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        header('Location: ./list.php');
-        exit();
-    }
+    $sql = "update companies set name=:name, manager_name=:manager_name, phone_number=:phone_number, postal_code=:postal_code, prefecture_code=:prefecture_code, address=:address, mail_address=:mail_address, modified=NOW() where id=:id";
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':name', $postData['name'], PDO::PARAM_STR);
+    $stmt->bindValue(':manager_name', $postData['manager_name'], PDO::PARAM_STR);
+    $stmt->bindValue(':phone_number', $postData['phone_number'], PDO::PARAM_STR);
+    $stmt->bindValue(':postal_code', $postData['postal_code'], PDO::PARAM_STR);
+    $stmt->bindValue(':prefecture_code', $postData['prefecture_code'], PDO::PARAM_STR);
+    $stmt->bindValue(':address', $postData['address'], PDO::PARAM_STR);
+    $stmt->bindValue(':mail_address', $postData['mail_address'], PDO::PARAM_STR);
+    $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
+    $stmt->execute();
+    header('Location: ./list.php');
+    exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
