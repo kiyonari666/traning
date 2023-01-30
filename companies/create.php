@@ -84,7 +84,7 @@ if (!empty($_POST)) {
         $errors['prefix'] = '半角英数文字のみで入力して下さい';
     }
 
-// DB挿入部
+    // DB挿入部
     if (empty($errors)) {
         $sql = "insert into companies (name, manager_name, phone_number, postal_code,prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
         $stmt = $db->prepare($sql);
@@ -172,7 +172,7 @@ if (!empty($_POST)) {
                                         <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                                     <?php endforeach; ?>                                         
                                 <?php else : ?>    
-                                    <option value="" selected hidden>選択してください</option>
+                                    <option value="" hidden>選択してください</option>
                                     <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
                                         <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                                     <?php endforeach; ?> 
