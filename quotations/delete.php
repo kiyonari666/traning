@@ -47,7 +47,7 @@ if (isset($_POST['id'])) {
                     <tr>
                         <th><p>見積番号</p></th>
                         <?php $prefixCode = h($res['no']); ?>
-                        <td><p><?php echo h(addPrefix($prefixCode)); ?></p></td>
+                        <td><p><?php echo h(addPrefix($_GET['prefix'])); ?><?php echo h($res['no']); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>見積名</p></th>
