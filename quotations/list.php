@@ -143,8 +143,8 @@ $resCmpanies = $stmt->fetch();
                             <td><p><?php echo h($record['validity_period']); ?></p></td>
                             <td><p><?php echo h($record['due_date']); ?></p></td>
                             <td><p><?php echo STATUS_LIST[h($record['status'])]; ?></p></td>
-                            <td class="tableCellCenter"><a href="./update.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>&prefix=<?php echo h($resCmpanies['prefix']); ?>">編集</a></td>
-                            <td class="tableCellCenter"><a href="./delete.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>&prefix=<?php echo h($resCmpanies['prefix']); ?>">削除</a></td>                        
+                            <td class="tableCellCenter"><a href="./update.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>">編集</a></td>
+                            <td class="tableCellCenter"><a href="./delete.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>">削除</a></td>                        
                         </tr>
                     <?php endforeach; ?>    
                 </table>
