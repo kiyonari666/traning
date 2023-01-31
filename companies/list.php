@@ -133,8 +133,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                             <td><p><?php echo h($record['manager_name']); ?></p></td>
                             <td><p><?php echo h($record['phone_number']); ?></p></td>                    
                             <td>
-                                <?php $postalCode = h($record['postal_code']); ?>
-                                <p>〒<?php echo h(addHyphen($postalCode)); ?></p>
+                                <p>〒<?php echo h(addHyphen($record['postal_code'])); ?></p>
                                 <p><?php echo h($record['address']); ?></p>
                             </td>
                             <td><p><?php echo h($record['mail_address']); ?></p></td>
