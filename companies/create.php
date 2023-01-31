@@ -12,12 +12,12 @@ $res = $stmt->fetchAll();
 if (!empty($_POST)) {
     foreach ($res as $val) {
         $array[] = $val['prefix'] === $_POST['prefix'];
+        $count += 1;
     }
+    $duplication = '';
     if (in_array(true, $array)) {
         $duplication = '重複する番号は使用できません';
         $_POST['prefix'] = '';
-    } else {
-        $duplication = '';
     }
 }
 
@@ -165,18 +165,15 @@ if (!empty($_POST)) {
                         <th></th>    
                         <td>
                             <span class="title">都道府県コード</span>                                
-                            <select name="prefecture_code">                           
-                                <?php if (!empty($values['prefecture_code'])) : ?>
-                                    <option value="<?php $values['prefecture_code'] ?>" selected><?php echo PREFECTURES_ARRAY[$values['prefecture_code']]; ?></option>
-                                    <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
+                            <select name="prefecture_code"> 
+                                <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
+                                    <?php if ($key === $res['prefecture_code']) : ?>
+                                        <option value="<?php echo $res['prefecture_code']; ?>" selected><?php echo PREFECTURES_ARRAY[$res['prefecture_code']]; ?></option>
+                                    <?php else : ?>
+                                        <option value="" hidden>都道府県を選んでください</option>
                                         <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
-                                    <?php endforeach; ?>                                         
-                                <?php else : ?>    
-                                    <option value="" hidden>選択してください</option>
-                                    <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
-                                        <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
-                                    <?php endforeach; ?> 
-                                <?php endif; ?>              
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </select><br>
                             <?php if (!empty($errors['prefecture_code'])) : ?>
                                 <br><div class="valiError"><?php echo $errors['prefecture_code']; ?></div>
