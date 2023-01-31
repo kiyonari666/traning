@@ -21,29 +21,12 @@ $res = $stmt->fetchAll();
 
 $count = count($res) ?? '';
 $count += 1;
-if ($count < 10) {
-    $digits = 9;
-} elseif ($count >= 10 && $count < 100) {
-    $digits = 8;
-} elseif ($count >= 100 && $count < 1000) {
-    $digits = 7;
-} elseif ($count >= 1000 && $count < 10000) {
-    $digits = 6;
-} elseif ($count >= 10000 && $count < 100000) {
-    $digits = 5;
-} elseif ($count >= 100000 && $count < 1000000) {
-    $digits = 4;
-} elseif ($count >= 1000000 && $count < 10000000) {
-    $digits = 3;
-} elseif ($count >= 10000000 && $count < 100000000) {
-    $digits = 2;
-} elseif ($count >= 100000000 && $count < 1000000000) {
-    $digits = 1;
-} elseif ($count >= 9999999999) {
+if ($count >= 99999999) {
     $upperLimit = '登録データ上限を超えています';
     $_POST = '';
 }
-$no = $resPrefix['prefix'] .= str_pad($count, $digits, '0', STR_PAD_LEFT);
+
+$no = $resPrefix['prefix'] .= str_pad($count, 8, '0', STR_PAD_LEFT);
 
 $values = [
     'title' => "",
