@@ -4,8 +4,8 @@ function thousandsSeparator($total)
 {
     return  number_format($total);
 }
-// プレフィックスに記号挿入用ファンクション
-function addPrefix($prefixCode)
+// 見積番号に記号挿入用ファンクション
+function addNo($no)
 {
-    return  substr_replace($prefixCode, '-p-', 8, 0);
+    return  substr_replace($no, '-p-', 8, 0);
 }
