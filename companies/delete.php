@@ -59,8 +59,7 @@ if (!empty($_POST['id'])) {
                         <th><p>住所</p></th>
                         <td>
                             <span class="title">郵便番号</span>
-                            <?php $postalCode = h($res['postal_code']); ?>
-                            <span class="rightText">〒<?php echo h(addHyphen($postalCode)); ?></span><br>
+                            <span class="rightText">〒<?php echo h(addHyphen($res['postal_code'])); ?></span><br>
                         </td> 
                     </tr>
                     <tr class="addressRowLayout">
