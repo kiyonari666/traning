@@ -136,12 +136,10 @@ $resCmpanies = $stmt->fetch();
                     </tr>
                     <?php foreach ($res as $record) : ?>
                         <tr>
-                            <?php $prefixCode = h($record['no']); ?>
-                            <td><p><?php echo h(addPrefix($resCmpanies['prefix'])); ?><?php echo h($prefixCode); ?></p></td>           
+                            <td><p><?php echo h(addNo($record['no'])); ?></p></td>           
                             <td><p><?php echo h($record['title']); ?></p></td>
                             <td><p><?php echo h($resCmpanies['manager_name']); ?></p></td>
-                            <?php $total = h($record['total']); ?>
-                            <td><p><?php echo h(thousandsSeparator($total)); ?>円</p></td>
+                            <td><p><?php echo h(thousandsSeparator($record['total'])); ?>円</p></td>
                             <td><p><?php echo h($record['validity_period']); ?></p></td>
                             <td><p><?php echo h($record['due_date']); ?></p></td>
                             <td><p><?php echo STATUS_LIST[h($record['status'])]; ?></p></td>
