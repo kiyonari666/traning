@@ -46,8 +46,7 @@ if (isset($_POST['id'])) {
                 <table>
                     <tr>
                         <th><p>見積番号</p></th>
-                        <?php $prefixCode = h($res['no']); ?>
-                        <td><p><?php echo h(addPrefix($_GET['prefix'])); ?><?php echo h($res['no']); ?></p></td>
+                        <td><p><?php echo h(addNO($res['no'])); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>見積名</p></th>
@@ -55,12 +54,11 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>会社名</p></th>
-                        <td><p><?php echo $_GET['name'] ?></p></td>
+                        <td><p><?php echo h($_GET['name']); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>金額</p></th>
-                        <?php $total = h($res['total']); ?>
-                        <td><p><?php echo h(thousandsSeparator($total)); ?>円</p></td>
+                        <td><p><?php echo h(thousandsSeparator($res['total'])); ?>円</p></td>
                     </tr>
                     <tr>
                         <th><p>見積書有効期限</p></th>
