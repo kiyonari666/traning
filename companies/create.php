@@ -1,9 +1,10 @@
 <?php
-require_once('./../const/prefecture.php');
 require_once('./../config/database.php');
+require_once('./../const/prefecture.php');
+require_once('./../function/common.php');
 require_once('./../function/company.php');
 
-// プレフィックス重複バリテーション
+// プレフィックス重複バリテーション　(別パターン　SQLで重複チェックする場合　prefixでwhereして　count 　1あれば　かぶりあり
 $sql = 'select prefix from companies';
 $stmt = $db->prepare($sql);
 $stmt->execute();
@@ -12,7 +13,6 @@ $res = $stmt->fetchAll();
 if (!empty($_POST)) {
     foreach ($res as $val) {
         $array[] = $val['prefix'] === $_POST['prefix'];
-        $count += 1;
     }
     $duplication = '';
     if (in_array(true, $array)) {
@@ -86,7 +86,7 @@ if (!empty($_POST)) {
 
     // DB挿入部
     if (empty($errors)) {
-        $sql = "insert into companies (name, manager_name, phone_number, postal_code,prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
+        $sql = "insert into companies (name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':name', $_POST['name'], PDO::PARAM_STR);
         $stmt->bindValue(':manager_name', $_POST['manager_name'], PDO::PARAM_STR);
@@ -164,13 +164,13 @@ if (!empty($_POST)) {
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>
-                            <span class="title">都道府県コード</span>                                
+                            <span class="title">都道府県</span>                                
                             <select name="prefecture_code"> 
                                 <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
-                                    <?php if ($key === $res['prefecture_code']) : ?>
-                                        <option value="<?php echo $res['prefecture_code']; ?>" selected><?php echo PREFECTURES_ARRAY[$res['prefecture_code']]; ?></option>
+                                    <?php if ($key === (int)$values['prefecture_code']) : ?>
+                                        <option value="<?php echo $values['prefecture_code']; ?>" selected><?php echo PREFECTURES_ARRAY[$values['prefecture_code']]; ?></option>
                                     <?php else : ?>
-                                        <option value="" hidden>都道府県を選んでください</option>
+                                        <option value="" hidden>選択してください</option> 
                                         <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                                     <?php endif; ?>
                                 <?php endforeach; ?>

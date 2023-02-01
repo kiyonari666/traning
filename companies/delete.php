@@ -1,21 +1,21 @@
 <?php
 require_once('./../config/database.php');
+require_once('./../const/prefecture.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
 // データ取得部
-$id = $_GET['id'];
 $sql = "select * from companies where id=:id";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+$stmt->bindValue(':id', (int)$_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
-     // レコード削除部
-if (!empty($_POST['id'])) {
-    $sql = "delete from companies where id=:delete";
+// レコード削除部
+if (!empty($_POST)) {
+    $sql = "delete from companies where id=:id";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(':delete', $_POST['id'], PDO::PARAM_INT);
+    $stmt->bindValue(':id', $res['id'], PDO::PARAM_INT);
     $stmt->execute();
     header('Location: ./list.php');
     exit();
@@ -65,8 +65,8 @@ if (!empty($_POST['id'])) {
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>                                
-                            <span class="title">都道府県コード　</span>
-                            <span class="rightText"><?php echo h($res['prefecture_code']); ?></span><br>
+                            <span class="title">都道府県</span>
+                            <span class="rightText"><?php echo PREFECTURES_ARRAY[h($res['prefecture_code'])]; ?></span><br>
                         </td>
                     </tr>
                     <tr class="addressRowLayout">

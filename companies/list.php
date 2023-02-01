@@ -11,19 +11,16 @@ $start = ($page - 1) * 10;
 if ($search !== '') {
     $sql .= " where name like :name";
 }
-// $sql .= " order by id limit :start,10";
 $sql .= " order by id";
 $stmt = $db->prepare($sql);
 if ($search !== '') {
     $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
 }
-// $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
 
 //レコードリストソート分岐
 $recordSort = $_GET['recordSort'] ?? '';
-// var_dump($res);
 if ($recordSort === "desc") {
     for ($i = 0; $i < count($res); $i++) {
         for ($j = 0; $j < count($res) - 1; $j++) {
@@ -54,8 +51,8 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
+    <head>
+        <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
@@ -67,8 +64,10 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
         <header>
             <div class="headerLeft">
                 <h1>会社一覧</h1>
-                <?php if ($search !== '') : ?>
+                <?php if ($search !== '' && !empty($res)) : ?>
                     <p>検索結果</p>
+                <?php elseif ($search !== '' && empty($res)) : ?>
+                    <p>検索に一致するデータがありません</p>
                 <?php endif; ?>               
             </div>          
             <div class="headerRight">
@@ -101,7 +100,6 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                             <!-- レコードソート実装部 -->
                             <form action="">
                                 <select name="recordSort" onchange="this.form.submit()">
-                                    <!-- セレクト初期値 降順で検索時は降順表示、それ以外は降順表示-->
                                     <?php if ($recordSort === "desc") : ?>
                                         <option hidden><?php echo "降順"; ?></option>
                                     <?php else : ?>
@@ -138,7 +136,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                             </td>
                             <td><p><?php echo h($record['mail_address']); ?></p></td>
                             <td class="tableCellCenter"><a href="./../quotations/list.php?companyId=<?php echo h($record['id']); ?>" class="estimateLink">見積一覧</a></td>
-                            <td class="tableCellCenter"><a href="#" class="estimateLink">請求一覧</a></td>
+                            <td class="tableCellCenter"><a href="./../invoices/list.php?companyId=<?php echo h($record['id']); ?>" class="estimateLink">請求一覧</a></td>
                             <td class="tableCellCenter"><a href="./update.php?id=<?php echo h($record['id']); ?>">編集</a></td>
                             <td class="tableCellCenter"><a href="./delete.php?id=<?php echo h($record['id']); ?>">削除</a></td>                        
                         </tr>

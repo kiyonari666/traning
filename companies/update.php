@@ -1,14 +1,13 @@
 <?php
-require_once('./../const/prefecture.php');
 require_once('./../config/database.php');
+require_once('./../const/prefecture.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
 // データ取得部
-$id = $_GET['id'];
 $sql = "select * from companies where id=:id";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':id', $id, PDO::PARAM_INT);
+$stmt->bindValue(':id', (int)$_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
@@ -16,7 +15,6 @@ $prefix = $res['prefix'] ?? '';
 
 if (!empty($_POST)) {
     $res = $_POST;
-    var_dump($res);
     $errors = [];
     // 会社名バリテーション
     if (empty($_POST['name'])) {
@@ -139,10 +137,10 @@ if (!empty($_POST)) {
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>
-                            <span class="title">都道府県コード</span>                                
+                            <span class="title">都道府県</span>                                
                             <select name="prefecture_code"> 
                                 <?php foreach (PREFECTURES_ARRAY as $key => $val) : ?>               
-                                    <?php if ($key === $res['prefecture_code']) : ?>
+                                    <?php if ($key === (int)$res['prefecture_code']) : ?>
                                         <option value="<?php echo $res['prefecture_code']; ?>" selected><?php echo PREFECTURES_ARRAY[$res['prefecture_code']]; ?></option>
                                     <?php else : ?>
                                         <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
