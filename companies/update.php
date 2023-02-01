@@ -31,8 +31,10 @@ if (!empty($_POST)) {
     // 電話番号バリテーション
     if (empty($_POST['phone_number'])) {
         $errors['phone_number'] = '必須入力項目です';
-    } elseif (!preg_match('/^[0-9]{11}$/', $_POST['phone_number'])) {
+    } elseif (!preg_match('/^[0-9]+$/', $_POST['phone_number'])) {
         $errors['phone_number'] = '半角整数のみ、ハイフンなしで入力して下さい';
+    } elseif (mb_strlen($_POST['phone_number']) > 11) {
+        $errors['phone_number'] = '11桁以内で入力して下さい';
     }
     // 郵便番号バリテーション
     if (empty($_POST['postal_code'])) {
