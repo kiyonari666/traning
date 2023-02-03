@@ -77,7 +77,7 @@ if (!empty($_POST)) {
 
     // テーブルデータ挿入部
     if (empty($errors)) {
-        $sql = "insert into quotations (company_id, no, title, total, validity_period, due_date, status, created, modified) values (:company_id, :no, :title, :total, :validity_period, :due_date, :status, NOW(), NOW())";
+        $sql = "insert into quotations (company_id, no, title, total, validity_period, due_date, status, created, modified, deleted) values (:company_id, :no, :title, :total, :validity_period, :due_date, :status, NOW(), NOW(), null)";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':company_id', $_GET['companyId'], PDO::PARAM_STR);
         $stmt->bindValue(':no', $no, PDO::PARAM_STR);

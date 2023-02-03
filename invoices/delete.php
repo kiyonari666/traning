@@ -15,7 +15,7 @@ $res = $stmt->fetch();
 
 // レコード削除部
 if (!empty($_POST)) {
-    $sql = "delete from invoices where id=:id";
+    $sql = "update invoices set deleted=NOW() where id=:id";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
     $stmt->execute();

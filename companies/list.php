@@ -3,22 +3,6 @@ require_once('./../config/database.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
-// 通常表示・検索表示のレコード取得
-// $sql = 'select * from companies';
-// $search = $_GET['search'] ?? '';
-// $page = $_GET['page'] ?? 1;
-// $start = ($page - 1) * 10;
-// if ($search !== '') {
-//     $sql .= " where name like :name";
-// }
-// $sql .= " order by id";
-// $stmt = $db->prepare($sql);
-// if ($search !== '') {
-//     $stmt->bindValue(':name', '%'. $search .'%', PDO::PARAM_STR);
-// }
-// $stmt->execute();
-// $res = $stmt->fetchAll();
-
 $sql = 'select * from companies where deleted is null';
 $search = $_GET['search'] ?? '';
 $page = $_GET['page'] ?? 1;

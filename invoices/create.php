@@ -86,7 +86,7 @@ if (!empty($_POST)) {
 
     // テーブルデータ挿入部
     if (empty($errors)) {
-        $sql = "insert into invoices (company_id, no, title, total, payment_deadline, date_of_issue, quotation_no, status, created, modified) values (:company_id, :no, :title, :total, :payment_deadline, :date_of_issue, :quotation_no, :status, NOW(), NOW())";
+        $sql = "insert into invoices (company_id, no, title, total, payment_deadline, date_of_issue, quotation_no, status, created, modified, deleted) values (:company_id, :no, :title, :total, :payment_deadline, :date_of_issue, :quotation_no, :status, NOW(), NOW(), null)";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':company_id', $_GET['companyId'], PDO::PARAM_STR);
         $stmt->bindValue(':no', $no, PDO::PARAM_STR);
