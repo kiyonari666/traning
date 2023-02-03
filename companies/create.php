@@ -10,14 +10,12 @@ if (isset($_POST['prefix'])) {
     $stmt->bindValue(':prefix', $_POST['prefix'], PDO::PARAM_STR);
     $stmt->execute();
     $res = $stmt->fetchAll();
-    var_dump($res[0]['count(prefix)']);
     $duplication = '';
-    if ((int)$res[0]['count(prefix)'] > 1) {
+    if ((int)$res[0]['count(prefix)'] >= 1) {
         $duplication = '重複する番号は使用できません';
         $_POST['prefix'] = '';
     }
 }
-    var_dump($res[0]['count(prefix)']);
 
 $values = [
     'name' => '',
