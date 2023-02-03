@@ -278,6 +278,7 @@ header .listBackButton {
     color: #DF2020;
     font-weight: bold;
 }
+
 /* コンテナ */
 /* テーブル寸法 !*/
 .container form {
@@ -308,6 +309,11 @@ input[type="text"] {
     font-weight: bold;
     color: red;
     margin-left: 10px;
+}
+.container .valiErrorLimit {
+    font-weight: bold;
+    color: red;
+    text-align: right;
 }
 /* 住所行 */
 /* 余計なボーダー消す */

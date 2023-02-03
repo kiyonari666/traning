@@ -13,9 +13,9 @@ $res = $stmt->fetch();
 
 // レコード削除部
 if (!empty($_POST)) {
-    $sql = "delete from companies where id=:id";
+    $sql = "update companies set deleted=NOW() where id=:id";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(':id', $res['id'], PDO::PARAM_INT);
+    $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
     $stmt->execute();
     header('Location: ./list.php');
     exit();

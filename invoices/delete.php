@@ -1,21 +1,21 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
-require_once('./../function/quote.php');
+require_once('./../function/invoice.php');
 
 $listPath = './list.php?companyId=' . $_GET['companyId'];
 
 // データ取得部
-$sql = "select * from quotations where id=:id";
+$sql = "select * from invoices where id=:id";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
 // レコード削除部
-if (isset($_POST['id'])) {
-    $sql = "delete from quotations where id=:id";
+if (!empty($_POST)) {
+    $sql = "delete from invoices where id=:id";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
     $stmt->execute();
@@ -36,7 +36,7 @@ if (isset($_POST['id'])) {
     <div class="wrap">
 
         <header>
-            <h1 class="headerTitle">見積削除</h1>
+            <h1 class="headerTitle">請求削除</h1>
             <a href="./list.php?companyId=<?php echo $_GET['companyId']; ?>">戻る</a>
         </header>
 
@@ -45,11 +45,11 @@ if (isset($_POST['id'])) {
             <form action="" method="post">
                 <table>
                     <tr>
-                        <th><p>見積番号</p></th>
-                        <td><p><?php echo h(addNO($res['no'])); ?></p></td>
+                        <th><p>請求番号</p></th>
+                        <td><p><?php echo h(addI($res['no'])); ?></p></td>
                     </tr>
                     <tr>
-                        <th><p>見積名</p></th>
+                        <th><p>請求名</p></th>
                         <td><p><?php echo h($res['title']); ?></p></td>
                     </tr>
                     <tr>
@@ -58,19 +58,23 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>金額</p></th>
-                        <td><p><?php echo h(thousandsSeparator($res['total'])); ?>円</p></td>
+                        <td><p><?php echo h(addSeparator($res['total'])); ?>円</p></td>
                     </tr>
                     <tr>
-                        <th><p>見積書有効期限</p></th>
-                        <td><p><?php echo h($res['validity_period']); ?></p></td>
+                        <th><p>請求期限</p></th>
+                        <td><p><?php echo h($res['payment_deadline']); ?></p></td>
                     </tr>
                     <tr>
-                        <th><p>納期</p></th>
-                        <td><p><?php echo h($res['due_date']); ?></p></td>
+                        <th><p>請求日</p></th>
+                        <td><p><?php echo h($res['date_of_issue']); ?></p></td>
+                    </tr>
+                    <tr>
+                        <th><p>見積番号</p></th>
+                        <td><p><?php echo h($res['quotation_no']); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>状態</p></th>
-                        <td><p><?php echo STATUS_LIST[h($res['status'])]; ?></p></td>
+                        <td><p><?php echo STATUS_LIST_I[h($res['status'])]; ?></p></td>
                     </tr>
                 </table>
                 <input type="hidden" name="id" value= "<?php echo h($res['id']); ?>">    

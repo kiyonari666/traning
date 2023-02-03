@@ -1,26 +1,27 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
-require_once('./../function/quote.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
+require_once('./../function/invoice.php');
 
 $listPath = './list.php?companyId=' . $_GET['companyId'];
 
 // 見積番号prefix+連番生成部
 $sql = "select prefix from companies where id=:companyId";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_STR);
+$stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
 $resPrefix = $stmt->fetch();
 
 $sql = "select no from quotations where company_id=:companyId";
 $stmt = $db->prepare($sql);
-$stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_STR);
+$stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
 
 $count = count($res) ?? '';
 $count += 1;
+$upperLimit = '';
 if ($count >= 99999999) {
     $upperLimit = '登録データ上限を超えています';
     $_POST = '';
@@ -107,19 +108,17 @@ if (!empty($_POST)) {
             <h1>見積作成</h1>
             <a href="./list.php?companyId=<?php echo $_GET['companyId']; ?>">戻る</a>
         </header>
-
+                
         <div class="container">
+            
+            <!-- 登録数上限メッセージ -->
+            <?php if ($upperLimit !== '') : ?>
+                <div class="valiErrorLimit"><?php echo $upperLimit; ?></div>
+            <?php endif; ?>
+            
             <!-- 新規登録フォーム -->
             <form action="" method="post">
                 <table>
-                    <tr>
-                        <th><p>見積番号</p></th>
-                        <?php if (!empty($upperLimit)) : ?>
-                            <td><p><?php echo addNo($no); ?></p></td>
-                        <?php else : ?>
-                            <td><p><?php echo addNo($no); ?></p></td>
-                        <?php endif; ?>
-                    </tr>
                     <tr>
                         <th><p>見積名</p></th>
                         <td>
@@ -164,9 +163,9 @@ if (!empty($_POST)) {
                         <th><p>状態</p></th>
                         <td>                               
                             <select name="status" class="selectbox">
-                            <?php foreach (STATUS_LIST as $key => $val) : ?>
-                                <?php if ($key == $values['status']) : ?>
-                                    <option value="<?php echo $values['status']; ?>" selected><?php echo STATUS_LIST[$values['status']]; ?></option>
+                            <?php foreach (STATUS_LIST_Q as $key => $val) : ?>
+                                <?php if ($key === (int)$values['status']) : ?>
+                                    <option value="<?php echo $values['status']; ?>" selected><?php echo STATUS_LIST_Q[$values['status']]; ?></option>
                                 <?php else : ?>
                                     <option value="" hidden>選択してください</option>               
                                     <option value="<?php echo $key; ?>"><?php echo $val; ?></option>

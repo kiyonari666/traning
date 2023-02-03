@@ -1,8 +1,8 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
-require_once('./../function/quote.php');
+require_once('./../function/invoice.php');
 
 $listPath = './list.php?companyId=' . $_GET['companyId'];
 
@@ -92,7 +92,7 @@ if (!empty($_POST)) {
                 <table>
                     <tr>
                         <th><p>見積番号</p></th>
-                        <td><p><?php echo addNo($no); ?></p></td>                        
+                        <td><p><?php echo addQ($no); ?></p></td>                        
                     </tr>
                     <tr>
                         <th><p>見積名</p></th>
@@ -138,9 +138,9 @@ if (!empty($_POST)) {
                         <th><p>状態</p></th>
                         <td>                               
                             <select name="status" class="selectbox">
-                            <?php foreach (STATUS_LIST as $key => $val) : ?>
-                                <?php if ($key == $res['status']) : ?>
-                                    <option value="<?php echo $res['status']; ?>" selected><?php echo STATUS_LIST[$res['status']]; ?></option>
+                            <?php foreach (STATUS_LIST_Q as $key => $val) : ?>
+                                <?php if ($key === (int)$res['status']) : ?>
+                                    <option value="<?php echo $res['status']; ?>" selected><?php echo STATUS_LIST_Q[$res['status']]; ?></option>
                                 <?php else : ?>              
                                     <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                                 <?php endif; ?>

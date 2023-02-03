@@ -1,8 +1,8 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
-require_once('./../function/quote.php');
+require_once('./../function/invoice.php');
 
 // 通常表示・検索表示のレコード取得
 $sql = 'select * from quotations where company_id=:companyId';
@@ -25,7 +25,7 @@ $sql .= ' limit :start,10';
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $companyId, PDO::PARAM_INT);
 if ($search !== '') {
-    $stmt->bindValue(':status', $search, PDO::PARAM_STR);
+    $stmt->bindValue(':status', $search, PDO::PARAM_INT);
 }
 $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->execute();
@@ -72,12 +72,12 @@ $resCmpanies = $stmt->fetch();
                 <?php endif; ?>
             </div>
             <div class="headerRight">
+                <h2><?php echo h($resCmpanies['name']); ?></h2>
                 <?php if ($search !== '') : ?>
-                    <a  class="listBackButton" href="./list.php?companyId<?php echo h($companyId); ?>">見積一覧へ戻る</a>
+                    <a  class="listBackButton" href="./list.php?companyId=<?php echo h($companyId); ?>">見積一覧へ戻る</a>
                 <?php endif; ?>               
                 <a href="./../companies/list.php" class="companyListBackButton">会社一覧へ戻る</a>    
-            </div>
-                
+            </div>                
         </header>
 
         <div class="listContainer">
@@ -87,11 +87,12 @@ $resCmpanies = $stmt->fetch();
                 <!-- 検索フォーム     -->               
                 <form action="" method="get">                   
                     <select name="search" class="searchWind">
-                        <?php if ($search !== '') : ?>
-                            <option value="" hidden><?php echo STATUS_LIST[h($search)]; ?></option>
-                        <?php endif; ?>
-                        <?php foreach (STATUS_LIST as $key => $val) : ?>         
-                            <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
+                        <?php foreach (STATUS_LIST_Q as $key => $val) : ?>         
+                            <?php if ($key === (int)$search) : ?>
+                                <option value="" selected><?php echo STATUS_LIST_Q[h($search)]; ?></option>
+                            <?php else : ?>
+                                <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
+                            <?php endif; ?>
                         <?php endforeach; ?> 
                     </select>
                     <input type="hidden" name="companyId" value="<?php echo h($companyId); ?>">
@@ -136,13 +137,13 @@ $resCmpanies = $stmt->fetch();
                     </tr>
                     <?php foreach ($res as $record) : ?>
                         <tr>
-                            <td><p><?php echo h(addNo($record['no'])); ?></p></td>           
+                            <td><p><?php echo h(addQ($record['no'])); ?></p></td>           
                             <td><p><?php echo h($record['title']); ?></p></td>
                             <td><p><?php echo h($resCmpanies['manager_name']); ?></p></td>
-                            <td><p><?php echo h(thousandsSeparator($record['total'])); ?>円</p></td>
+                            <td><p><?php echo h(addSeparator($record['total'])); ?>円</p></td>
                             <td><p><?php echo h($record['validity_period']); ?></p></td>
                             <td><p><?php echo h($record['due_date']); ?></p></td>
-                            <td><p><?php echo STATUS_LIST[h($record['status'])]; ?></p></td>
+                            <td><p><?php echo STATUS_LIST_Q[h($record['status'])]; ?></p></td>
                             <td class="tableCellCenter"><a href="./update.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>">編集</a></td>
                             <td class="tableCellCenter"><a href="./delete.php?companyId=<?php echo h($companyId); ?>&id=<?php echo h($record['id']); ?>&name=<?php echo h($resCmpanies['name']); ?>">削除</a></td>                        
                         </tr>
@@ -169,7 +170,7 @@ $resCmpanies = $stmt->fetch();
                 <?php elseif ($recordSort !== '' && $page < $maxPage) : ?>
                     <a  class="backButton" href="./list.php?companyId=<?php echo h($companyId); ?>&page=<?php echo h($page + 1); ?>&recordSort=<?php echo h($recordSort); ?>">次へ &rarr;</a>    
                 <?php elseif ($page < $maxPage) : ?>
-                        <a  class="backButton" href="./list.php?companyId=<?php echo h($companyId); ?>&page=<?php echo h($page + 1); ?>">次へ &rarr;</a>
+                    <a  class="backButton" href="./list.php?companyId=<?php echo h($companyId); ?>&page=<?php echo h($page + 1); ?>">次へ &rarr;</a>
                 <?php endif; ?>
             </div>
         </div>

@@ -1,8 +1,8 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
-require_once('./../function/quote.php');
+require_once('./../function/invoice.php');
 
 $listPath = './list.php?companyId=' . $_GET['companyId'];
 
@@ -14,7 +14,7 @@ $stmt->execute();
 $res = $stmt->fetch();
 
 // レコード削除部
-if (isset($_POST['id'])) {
+if (!empty($_POST)) {
     $sql = "delete from quotations where id=:id";
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
@@ -46,7 +46,7 @@ if (isset($_POST['id'])) {
                 <table>
                     <tr>
                         <th><p>見積番号</p></th>
-                        <td><p><?php echo h(addNO($res['no'])); ?></p></td>
+                        <td><p><?php echo h(addQ($res['no'])); ?></p></td>
                     </tr>
                     <tr>
                         <th><p>見積名</p></th>
@@ -58,7 +58,7 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>金額</p></th>
-                        <td><p><?php echo h(thousandsSeparator($res['total'])); ?>円</p></td>
+                        <td><p><?php echo h(addSeparator($res['total'])); ?>円</p></td>
                     </tr>
                     <tr>
                         <th><p>見積書有効期限</p></th>
@@ -70,7 +70,7 @@ if (isset($_POST['id'])) {
                     </tr>
                     <tr>
                         <th><p>状態</p></th>
-                        <td><p><?php echo STATUS_LIST[h($res['status'])]; ?></p></td>
+                        <td><p><?php echo STATUS_LIST_Q[h($res['status'])]; ?></p></td>
                     </tr>
                 </table>
                 <input type="hidden" name="id" value= "<?php echo h($res['id']); ?>">    

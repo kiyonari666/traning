@@ -4,22 +4,20 @@ require_once('./../const/prefecture.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
-// プレフィックス重複バリテーション　(別パターン　SQLで重複チェックする場合　prefixでwhereして　count 　1あれば　かぶりあり
-$sql = 'select prefix from companies';
-$stmt = $db->prepare($sql);
-$stmt->execute();
-$res = $stmt->fetchAll();
-
-if (!empty($_POST)) {
-    foreach ($res as $val) {
-        $array[] = $val['prefix'] === $_POST['prefix'];
-    }
+if (isset($_POST['prefix'])) {
+    $sql = 'select count(prefix) from companies where prefix=:prefix';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':prefix', $_POST['prefix'], PDO::PARAM_STR);
+    $stmt->execute();
+    $res = $stmt->fetchAll();
+    var_dump($res[0]['count(prefix)']);
     $duplication = '';
-    if (in_array(true, $array)) {
+    if ((int)$res[0]['count(prefix)'] > 1) {
         $duplication = '重複する番号は使用できません';
         $_POST['prefix'] = '';
     }
 }
+    var_dump($res[0]['count(prefix)']);
 
 $values = [
     'name' => '',
@@ -88,7 +86,7 @@ if (!empty($_POST)) {
 
     // DB挿入部
     if (empty($errors)) {
-        $sql = "insert into companies (name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix, created, modified) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW())";
+        $sql = "insert into companies (name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix, created, modified, deleted) values (:name, :manager_name, :phone_number, :postal_code, :prefecture_code, :address, :mail_address, :prefix, NOW(), NOW(), null)";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':name', $_POST['name'], PDO::PARAM_STR);
         $stmt->bindValue(':manager_name', $_POST['manager_name'], PDO::PARAM_STR);

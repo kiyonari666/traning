@@ -1,13 +1,13 @@
 <?php
-require_once('./../const/status.php');
 require_once('./../config/database.php');
+require_once('./../const/status.php');
 require_once('./../function/common.php');
-require_once('./../function/quote.php');
+require_once('./../function/invoice.php');
 
 $listPath = './list.php?companyId=' . $_GET['companyId'];
 
 // データ取得部
-$sql = "select * from quotations where id=:id";
+$sql = "select * from invoices where id=:id";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
@@ -32,21 +32,29 @@ if (!empty($_POST)) {
     } elseif (mb_strlen($_POST['total']) > 10) {
         $errors['total'] = '入力上限を超えています';
     }
-    // 見積書有効期限バリテーション
-    if (empty($_POST['validity_period'])) {
-        $errors['validity_period'] = '必須入力項目です';
-    } elseif (!preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['validity_period'])) {
-        $errors['validity_period'] = '日付は、20xx-01-01の形式で入力して下さい';
+   // 支払期限バリテーション
+    if (empty($_POST['payment_deadline'])) {
+        $errors['payment_deadline'] = '必須入力項目です';
+    } elseif (!preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
+        $errors['payment_deadline'] = '日付は、20xx-01-01の形式で入力して下さい';
+    } elseif (empty($_POST['date_of_issue']) && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
+        $errors['payment_deadline'] = '請求日を先に設定してください';
+    } elseif ($_POST['payment_deadline'] < $_POST['date_of_issue'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
+        $errors['payment_deadline'] = '支払期限は、請求日より、後日に設定してください';
     }
-    // 納期バリテーション
-    if (empty($_POST['due_date'])) {
-        $errors['due_date'] = '必須入力項目です';
-    } elseif (!preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
-        $errors['due_date'] = '日付は、20xx-01-01の形式で入力して下さい';
-    } elseif (empty($_POST['validity_period']) && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
-        $errors['due_date'] = '見積書有効期限を先に設定してください';
-    } elseif ($_POST['due_date'] < $_POST['validity_period'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
-        $errors['due_date'] = '納期日付は、見積書有効期限日付より、後日に設定してください';
+    // 請求日バリテーション
+    if (empty($_POST['date_of_issue'])) {
+        $errors['date_of_issue'] = '必須入力項目です';
+    } elseif (!preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['date_of_issue'])) {
+        $errors['date_of_issue'] = '日付は、20xx-01-01の形式で入力して下さい';
+    }
+    // 見積書番号バリテーション
+    if (empty($_POST['quotation_no'])) {
+        $errors['quotation_no'] = '必須入力項目です';
+    } elseif (!preg_match('/^[a-zA-Z0-9]*$/', $_POST['quotation_no'])) {
+        $errors['quotation_no'] = '半角英数字のみで、入力して下さい';
+    } elseif (mb_strlen($_POST['quotation_no']) > 100) {
+        $errors['quotation_no'] = '100文字以内で入力して下さい';
     }
     // 状態バリテーション
     if (empty($_POST['status'])) {
@@ -55,12 +63,13 @@ if (!empty($_POST)) {
 
     // レコード変更部
     if (empty($errors)) {
-        $sql = "update quotations set title=:title, total=:total, validity_period=:validity_period, due_date=:due_date, status=:status, modified=NOW() where id=:id";
+        $sql = "update invoices set title=:title, total=:total, payment_deadline=:payment_deadline, date_of_issue=:date_of_issue, quotation_no=:quotation_no, status=:status, modified=NOW() where id=:id";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':title', $_POST['title'], PDO::PARAM_STR);
         $stmt->bindValue(':total', $_POST['total'], PDO::PARAM_STR);
-        $stmt->bindValue(':validity_period', $_POST['validity_period'], PDO::PARAM_STR);
-        $stmt->bindValue(':due_date', $_POST['due_date'], PDO::PARAM_STR);
+        $stmt->bindValue(':payment_deadline', $_POST['payment_deadline'], PDO::PARAM_STR);
+        $stmt->bindValue(':date_of_issue', $_POST['date_of_issue'], PDO::PARAM_STR);
+        $stmt->bindValue(':quotation_no', $_POST['quotation_no'], PDO::PARAM_STR);
         $stmt->bindValue(':status', $_POST['status'], PDO::PARAM_STR);
         $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
         $stmt->execute();
@@ -91,11 +100,11 @@ if (!empty($_POST)) {
             <form action="" method="post">
                 <table>
                     <tr>
-                        <th><p>見積番号</p></th>
-                        <td><p><?php echo addNo($no); ?></p></td>                        
+                        <th><p>請求番号</p></th>
+                        <td><p><?php echo addi($no); ?></p></td>                        
                     </tr>
                     <tr>
-                        <th><p>見積名</p></th>
+                        <th><p>請求名</p></th>
                         <td>
                             <input type="text" name="title" value="<?php echo h($res['title']); ?>">
                             <?php if (!empty($errors['title'])) : ?>
@@ -117,20 +126,29 @@ if (!empty($_POST)) {
                         </td>
                     </tr>
                     <tr>
-                        <th><p>見積書有効期限</p></th>
+                        <th><p>支払期限</p></th>
                         <td>
-                            <input type="text" name="validity_period" value="<?php echo h($res['validity_period']); ?>">
-                            <?php if (!empty($errors['validity_period'])) : ?>
-                                <div class="valiError"><?php echo $errors['validity_period']; ?></div>
+                            <input type="text" name="payment_deadline" value="<?php echo h($res['payment_deadline']); ?>">
+                            <?php if (!empty($errors['payment_deadline'])) : ?>
+                                <div class="valiError"><?php echo $errors['payment_deadline']; ?></div>
                             <?php endif; ?>
                         </td>
                     </tr>
                     <tr>
-                        <th><p>納期</p></th>
+                        <th><p>請求日</p></th>
                         <td>
-                            <input type="text" name="due_date" value="<?php echo h($res['due_date']); ?>">
-                            <?php if (!empty($errors['due_date'])) : ?>
-                                <div class="valiError"><?php echo $errors['due_date']; ?></div>
+                            <input type="text" name="date_of_issue" value="<?php echo h($res['date_of_issue']); ?>">
+                            <?php if (!empty($errors['date_of_issue'])) : ?>
+                                <div class="valiError"><?php echo $errors['date_of_issue']; ?></div>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><p>見積番号</p></th>
+                        <td>
+                            <input type="text" name="quotation_no" value="<?php echo $res['quotation_no'] ?>">
+                            <?php if (!empty($errors['quotation_no'])) : ?>
+                                <div class="valiError"><?php echo $errors['quotation_no']; ?></div>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -138,9 +156,9 @@ if (!empty($_POST)) {
                         <th><p>状態</p></th>
                         <td>                               
                             <select name="status" class="selectbox">
-                            <?php foreach (STATUS_LIST as $key => $val) : ?>
-                                <?php if ($key == $res['status']) : ?>
-                                    <option value="<?php echo $res['status']; ?>" selected><?php echo STATUS_LIST[$res['status']]; ?></option>
+                            <?php foreach (STATUS_LIST_I as $key => $val) : ?>
+                                <?php if ($key === (int)$res['status']) : ?>
+                                    <option value="<?php echo $res['status']; ?>" selected><?php echo STATUS_LIST_I[$res['status']]; ?></option>
                                 <?php else : ?>              
                                     <option value="<?php echo $key; ?>"><?php echo $val; ?></option>
                                 <?php endif; ?>
