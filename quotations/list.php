@@ -5,7 +5,7 @@ require_once('./../function/common.php');
 require_once('./../function/invoice.php');
 
 // 通常表示・検索表示のレコード取得
-$sql = 'select * from quotations where company_id=:companyId';
+$sql = 'select * from quotations where company_id=:companyId && deleted is null';
 $companyId = $_GET['companyId'] ?? '';
 $search = $_GET['search'] ?? '';
 $recordSort = $_GET['recordSort'] ?? '';
