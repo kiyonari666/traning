@@ -74,7 +74,6 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
     <link rel="stylesheet" href="./../stylesheet/style.css">
 </head>
 <body>
-    gittest
     <div class="listWrap">
         <header>
             <div class="headerLeft">
