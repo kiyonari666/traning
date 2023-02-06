@@ -301,7 +301,7 @@ input[type="text"] {
 }
 /* th・tdの高さ寸法 */
 .container table tr {
-    height: 68px;
+    height: 60px;
 }
 /* バリテーションメッセージ */
 .container .valiError {
