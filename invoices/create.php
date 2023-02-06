@@ -62,7 +62,7 @@ if (!empty($_POST)) {
         $errors['payment_deadline'] = '日付は、20xx-01-01の形式で入力して下さい';
     } elseif (empty($_POST['date_of_issue']) && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
         $errors['payment_deadline'] = '請求日を先に設定してください';
-    } elseif ($_POST['payment_deadline'] < $_POST['date_of_issue'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
+    } elseif ($_POST['payment_deadline'] <= $_POST['date_of_issue'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['payment_deadline'])) {
         $errors['payment_deadline'] = '支払期限は、請求日より、後日に設定してください';
     }
     // 請求日バリテーション
