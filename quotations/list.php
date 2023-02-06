@@ -32,7 +32,7 @@ $stmt->execute();
 $res = $stmt->fetchAll();
 
 // 通常表示・検索表示のページ数取得
-$sql = "select count(*) from quotations where company_id=:companyId";
+$sql = "select count(*) from quotations where company_id=:companyId && deleted is null";
 if ($search !== '') {
     $sql .= " && status=:status";
 }
