@@ -108,6 +108,7 @@ if (!empty($_POST)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./../stylesheet/style.css">
+    <script src="./../script/script.js" defer></script>
 </head>
 <body>
     <div class="wrap">
@@ -119,7 +120,7 @@ if (!empty($_POST)) {
 
         <div class="container">
             <!-- 新規登録フォーム -->
-            <form action="" method="post">
+            <form action="" method="post" name="comCreateForm">
                 <table>
                     <tr>
                         <th><p>会社名</p></th>
