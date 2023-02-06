@@ -51,7 +51,7 @@ if (!empty($_POST)) {
     if (empty($_POST['total'])) {
         $errors['total'] = '入力必須項目です';
     } elseif (!preg_match('/^[0-9]*$/', $_POST['total'])) {
-        $errors['total'] = '半角英数字で入力してください';
+        $errors['total'] = '半角数字で入力してください';
     } elseif (mb_strlen($_POST['total']) > 10) {
         $errors['total'] = '入力上限を超えています';
     }

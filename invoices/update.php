@@ -13,7 +13,8 @@ $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
-$no = $res['no'];
+$no = $res['no'] ?? '';
+$quotation_no = $res['quotation_no'] ?? '';
 
 if (!empty($_POST)) {
     $res = $_POST;
@@ -28,7 +29,7 @@ if (!empty($_POST)) {
     if (empty($_POST['total'])) {
         $errors['total'] = '入力必須項目です';
     } elseif (!preg_match('/^[0-9]*$/', $_POST['total'])) {
-        $errors['total'] = '半角英数字で入力してください';
+        $errors['total'] = '半角数字で入力してください';
     } elseif (mb_strlen($_POST['total']) > 10) {
         $errors['total'] = '入力上限を超えています';
     }
@@ -48,14 +49,6 @@ if (!empty($_POST)) {
     } elseif (!preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['date_of_issue'])) {
         $errors['date_of_issue'] = '日付は、20xx-01-01の形式で入力して下さい';
     }
-    // 見積書番号バリテーション
-    if (empty($_POST['quotation_no'])) {
-        $errors['quotation_no'] = '必須入力項目です';
-    } elseif (!preg_match('/^[a-zA-Z0-9]*$/', $_POST['quotation_no'])) {
-        $errors['quotation_no'] = '半角英数字のみで、入力して下さい';
-    } elseif (mb_strlen($_POST['quotation_no']) > 100) {
-        $errors['quotation_no'] = '100文字以内で入力して下さい';
-    }
     // 状態バリテーション
     if (empty($_POST['status'])) {
         $errors['status'] = '必須入力項目です';
@@ -63,13 +56,12 @@ if (!empty($_POST)) {
 
     // レコード変更部
     if (empty($errors)) {
-        $sql = "update invoices set title=:title, total=:total, payment_deadline=:payment_deadline, date_of_issue=:date_of_issue, quotation_no=:quotation_no, status=:status, modified=NOW() where id=:id";
+        $sql = "update invoices set title=:title, total=:total, payment_deadline=:payment_deadline, date_of_issue=:date_of_issue, status=:status, modified=NOW() where id=:id";
         $stmt = $db->prepare($sql);
         $stmt->bindValue(':title', $_POST['title'], PDO::PARAM_STR);
         $stmt->bindValue(':total', $_POST['total'], PDO::PARAM_STR);
         $stmt->bindValue(':payment_deadline', $_POST['payment_deadline'], PDO::PARAM_STR);
         $stmt->bindValue(':date_of_issue', $_POST['date_of_issue'], PDO::PARAM_STR);
-        $stmt->bindValue(':quotation_no', $_POST['quotation_no'], PDO::PARAM_STR);
         $stmt->bindValue(':status', $_POST['status'], PDO::PARAM_STR);
         $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_INT);
         $stmt->execute();
@@ -91,7 +83,7 @@ if (!empty($_POST)) {
     <div class="wrap">
 
         <header>
-            <h1 class="headerTitle">見積編集</h1>
+            <h1 class="headerTitle">請求編集</h1>
             <a href="./list.php?companyId=<?php echo $_GET['companyId']; ?>">戻る</a>
         </header>
 
@@ -101,7 +93,7 @@ if (!empty($_POST)) {
                 <table>
                     <tr>
                         <th><p>請求番号</p></th>
-                        <td><p><?php echo addi($no); ?></p></td>                        
+                        <td><p><?php echo h(addi($no)); ?></p></td>                        
                     </tr>
                     <tr>
                         <th><p>請求名</p></th>
@@ -145,12 +137,7 @@ if (!empty($_POST)) {
                     </tr>
                     <tr>
                         <th><p>見積番号</p></th>
-                        <td>
-                            <input type="text" name="quotation_no" value="<?php echo $res['quotation_no'] ?>">
-                            <?php if (!empty($errors['quotation_no'])) : ?>
-                                <div class="valiError"><?php echo $errors['quotation_no']; ?></div>
-                            <?php endif; ?>
-                        </td>
+                        <td><p><?php echo h($quotation_no); ?></p></td> 
                     </tr>
                     <tr>
                         <th><p>状態</p></th>

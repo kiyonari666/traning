@@ -32,7 +32,7 @@ $stmt->execute();
 $res = $stmt->fetchAll();
 
 // 通常表示・検索表示のページ数取得
-$sql = "select count(*) from invoices where company_id=:companyId";
+$sql = "select count(*) from invoices where company_id=:companyId && deleted is null";
 if ($search !== '') {
     $sql .= " && status=:status";
 }
@@ -83,7 +83,7 @@ $resCmpanies = $stmt->fetch();
         <div class="listContainer">
             <div class="listContainerTop">
                 <!-- 新規登録ボタン -->
-                <a class="newCreateButton" href="./create.php?companyId=<?php echo h($companyId); ?>&name=<?php echo h($resCmpanies['name']); ?>">見積作成</a>
+                <a class="newCreateButton" href="./create.php?companyId=<?php echo h($companyId); ?>&name=<?php echo h($resCmpanies['name']); ?>">請求作成</a>
                 <!-- 検索フォーム     -->               
                 <form action="" method="get">                   
                     <select name="search" class="searchWind">
