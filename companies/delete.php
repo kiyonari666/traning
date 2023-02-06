@@ -43,6 +43,10 @@ if (!empty($_POST)) {
             <form action="" method="post">
                 <table>
                     <tr>
+                        <th><p>管理番号</p></th>
+                        <td><p><?php echo h($res['id']); ?></p></td>
+                    </tr>
+                    <tr>
                         <th><p>会社名</p></th>
                         <td><p><?php echo h($res['name']); ?></p></td>
                     </tr>
