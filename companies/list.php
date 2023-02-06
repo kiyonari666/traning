@@ -1,5 +1,6 @@
 <?php
 require_once('./../config/database.php');
+require_once('./../const/prefecture.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
@@ -36,9 +37,9 @@ if ($recordSort === "desc") {
 $records = array_splice($res, ($page - 1) * 10, 10);
 
 // 通常表示・検索表示のページ数取得
-$sql = "select count(*) from companies";
+$sql = "select count(*) from companies where deleted is null";
 if ($search !== '') {
-    $sql .= " where name like :name";
+    $sql .= " && name like :name";
 }
 $stmt = $db->prepare($sql);
 if ($search !== '') {
@@ -94,7 +95,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                 <table>
                     <tr>
                         <th class="sortFrom">
-                            <p>会社番号</p>
+                            <p>管理番号</p>
                             <!-- レコードソート実装部 -->
                             <form action="">
                                 <select name="recordSort" onchange="this.form.submit()">
@@ -130,7 +131,7 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
                             <td><p><?php echo h($record['phone_number']); ?></p></td>                    
                             <td>
                                 <p>〒<?php echo h(addHyphen($record['postal_code'])); ?></p>
-                                <p><?php echo h($record['address']); ?></p>
+                                <p><?php echo PREFECTURES_ARRAY[h($record['prefecture_code'])]; ?><?php echo h($record['address']); ?></p>
                             </td>
                             <td><p><?php echo h($record['mail_address']); ?></p></td>
                             <td class="tableCellCenter"><a href="./../quotations/list.php?companyId=<?php echo h($record['id']); ?>" class="estimateLink">見積一覧</a></td>

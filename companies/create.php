@@ -47,7 +47,7 @@ if (!empty($_POST)) {
     if (empty($_POST['phone_number'])) {
         $errors['phone_number'] = '必須入力項目です';
     } elseif (!preg_match('/^[0-9]+$/', $_POST['phone_number'])) {
-        $errors['phone_number'] = '半角整数のみ、ハイフンなしで入力して下さい';
+        $errors['phone_number'] = '半角数字のみ、ハイフンなしで入力して下さい';
     } elseif (mb_strlen($_POST['phone_number']) > 11) {
         $errors['phone_number'] = '11桁以内で入力して下さい';
     }
@@ -55,7 +55,7 @@ if (!empty($_POST)) {
     if (empty($_POST['postal_code'])) {
         $errors['postal_code'] = '必須入力項目です';
     } elseif (!preg_match('/^[0-9]{7}$/', $_POST['postal_code'])) {
-        $errors['postal_code'] = '半角整数のみ、ハイフンなしで入力して下さい';
+        $errors['postal_code'] = '半角数字のみ、ハイフンなしで入力して下さい';
     }
     // 都道府県コードバリテーション
     if (empty($_POST['prefecture_code'])) {
@@ -70,7 +70,7 @@ if (!empty($_POST)) {
     // メールアドレスバリテーション
     if (empty($_POST['mail_address'])) {
         $errors['mail_address'] = '必須入力項目です';
-    } elseif (!preg_match('/^[A-Za-z0-9]+\.*[\w\-]*\.*[A-Za-z0-9]+@+[A-Za-z0-9]+[\w\-]*\.+[A-Za-z]+\.*[A-Za-z]*$/', $_POST['mail_address'])) {
+    } elseif (!filter_var($_POST['mail_address'], FILTER_VALIDATE_EMAIL)) {
         $errors['mail_address'] = '別のメールアドレスをお試しください';
     }
     // プレフィックスバリテーション
@@ -181,7 +181,7 @@ if (!empty($_POST)) {
                     <tr class="addressRowLayout">
                         <th></th>    
                         <td>
-                            <span class="title">住所</span>
+                            <span class="title">市区町村</span>
                                 <input type="text" name="address" value="<?php echo $values['address']; ?>"><br>                      
                             <?php if (!empty($errors['address'])) : ?>
                                 <br><div class="valiError"><?php echo $errors['address']; ?></div>
