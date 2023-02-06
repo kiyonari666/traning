@@ -45,7 +45,7 @@ if (!empty($_POST)) {
         $errors['due_date'] = '日付は、20xx-01-01の形式で入力して下さい';
     } elseif (empty($_POST['validity_period']) && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
         $errors['due_date'] = '見積書有効期限を先に設定してください';
-    } elseif ($_POST['due_date'] < $_POST['validity_period'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
+    } elseif ($_POST['due_date'] <= $_POST['validity_period'] && preg_match('/^[0-9]{4}[-]+[0-9]{2}[-]+[0-9]{2}$/', $_POST['due_date'])) {
         $errors['due_date'] = '納期日付は、見積書有効期限日付より、後日に設定してください';
     }
     // 状態バリテーション
