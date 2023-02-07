@@ -5,13 +5,13 @@ require_once('./../function/common.php');
 require_once('./../function/company.php');
 
 if (isset($_POST['prefix'])) {
-    $sql = 'select count(prefix) from companies where prefix=:prefix';
+    $sql = 'select count(prefix) as cnt from companies where prefix=:prefix';
     $stmt = $db->prepare($sql);
     $stmt->bindValue(':prefix', $_POST['prefix'], PDO::PARAM_STR);
     $stmt->execute();
     $res = $stmt->fetchAll();
     $duplication = '';
-    if ((int)$res[0]['count(prefix)'] >= 1) {
+    if ((int)$res[0]['cnt'] >= 1) {
         $duplication = '重複する番号は使用できません';
         $_POST['prefix'] = '';
     }
