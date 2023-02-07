@@ -63,11 +63,9 @@ $maxPage = ceil($maxPage['count(*)'] / 10);
         <header>
             <div class="headerLeft">
                 <h1>会社一覧</h1>
-                <?php if ($search !== '' && !empty($res)) : ?>
+                <?php if ($search !== '') : ?>
                     <p>検索結果</p>
-                <?php elseif ($search !== '' && empty($res)) : ?>
-                    <p>検索に一致するデータがありません</p>
-                <?php endif; ?>               
+                <?php endif; ?>
             </div>          
             <div class="headerRight">
                 <?php if ($search !== '') : ?>               
