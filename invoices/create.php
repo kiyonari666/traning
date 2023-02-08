@@ -13,6 +13,12 @@ $stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
 $resPrefix = $stmt->fetch();
 
+// ?companyIdパラメーターいたずら対策
+if (empty($resCompanies)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
+
 $sql = "select count(no) as cnt from invoices where company_id=:companyId";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);

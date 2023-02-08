@@ -13,6 +13,12 @@ $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
+// ?companyIdパラメーターいたずら対策
+if (empty($res)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
+
 // レコード削除部
 if (!empty($_POST)) {
     $sql = "update invoices set deleted=NOW() where id=:id";
