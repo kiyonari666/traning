@@ -13,21 +13,21 @@ $stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
 $resPrefix = $stmt->fetch();
 
-$sql = "select count(no) from invoices where company_id=:companyId";
+$sql = "select count(no) as cnt from invoices where company_id=:companyId";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
 
-$res[0]['count(no)'] += 1;
+$res[0]['cnt'] += 1;
 
 $upperLimit = '';
-if ($res[0]['count(no)'] > 99999999) {
+if ($res[0]['cnt'] > 99999999) {
      $upperLimit = '登録データ上限を超えています';
      $_POST = '';
 }
 
-$no = $resPrefix['prefix'] .= str_pad($res[0]['count(no)'], 8, '0', STR_PAD_LEFT);
+$no = $resPrefix['prefix'] .= str_pad($res[0]['cnt'], 8, '0', STR_PAD_LEFT);
 
 $values = [
     'title' => '',
