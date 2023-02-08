@@ -52,8 +52,8 @@ $maxPage = ceil($maxPage['cnt'] / 10);
 //クエリパラメータいたずら対策
 if (isset($_GET['page'])) {
     if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
-        header('Location: ./list.php');
-        exit();
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./list.php";</script>';
     }
 }
 ?>
