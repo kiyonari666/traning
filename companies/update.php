@@ -11,7 +11,7 @@ $stmt->bindValue(':id', (int)$_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
-//クエリパラメータいたずら対策
+//?idパラメータいたずら対策
 if ($res === false) {
     echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
     echo '<script>location.href="./list.php";</script>';

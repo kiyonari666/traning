@@ -49,7 +49,7 @@ $stmt->execute();
 $maxPage = $stmt->fetch();
 $maxPage = ceil($maxPage['cnt'] / 10);
 
-//クエリパラメータいたずら対策
+//?pageパラメータいたずら対策
 if (isset($_GET['page'])) {
     if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
         echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
