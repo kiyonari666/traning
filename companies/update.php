@@ -11,6 +11,12 @@ $stmt->bindValue(':id', (int)$_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
+//クエリパラメータいたずら対策
+if ($res === false) {
+    header('Location: ./list.php');
+    exit();
+}
+
 $id = $res['id'] ?? '';
 $prefix = $res['prefix'] ?? '';
 
