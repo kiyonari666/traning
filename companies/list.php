@@ -37,7 +37,7 @@ if ($recordSort === "desc") {
 $records = array_splice($res, ($page - 1) * 10, 10);
 
 // 通常表示・検索表示のページ数取得
-$sql = "select count(*) from companies where deleted is null";
+$sql = "select count(*) as cnt from companies where deleted is null";
 if ($search !== '') {
     $sql .= " && name like :name";
 }
@@ -47,7 +47,15 @@ if ($search !== '') {
 }
 $stmt->execute();
 $maxPage = $stmt->fetch();
-$maxPage = ceil($maxPage['count(*)'] / 10);
+$maxPage = ceil($maxPage['cnt'] / 10);
+
+if (isset($_GET['page'])) {
+    if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
+        header('Location: ./list.php');
+        exit();
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
