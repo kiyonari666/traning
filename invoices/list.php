@@ -4,6 +4,14 @@ require_once('./../const/status.php');
 require_once('./../function/common.php');
 require_once('./../function/invoice.php');
 
+// ?pageパラメータいたずら対策
+if (isset($_GET['page'])) {
+    if ($_GET['page'] < 1) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
+
 // 通常表示・検索表示のレコード取得
 $sql = 'select * from invoices where company_id=:companyId && deleted is null';
 $companyId = $_GET['companyId'] ?? '';
@@ -45,12 +53,32 @@ $stmt->execute();
 $maxPage = $stmt->fetch();
 $maxPage = ceil($maxPage['count(*)'] / 10);
 
-// 別テーブルレコード取得
+// カンパニーテーブル必要データ取得
 $sql = "select * from companies where id=:companyId";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $companyId, PDO::PARAM_INT);
 $stmt->execute();
 $resCmpanies = $stmt->fetch();
+
+// ?companyIdパラメーターいたずら対策
+if (empty($resCmpanies)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
+// ?pageパラメータいたずら対策
+if (isset($_GET['page'])) {
+    if ($_GET['page'] > $maxPage) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
+// ?searchパラメータいたずら対策
+if (isset($_GET['search'])) {
+    if ((int)$_GET['search'] !== 1 && (int)$_GET['search'] !== 2) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
