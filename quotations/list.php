@@ -11,6 +11,7 @@ $search = $_GET['search'] ?? '';
 $recordSort = $_GET['recordSort'] ?? '';
 $page = $_GET['page'] ?? 1;
 $start = ($page - 1) * 10;
+
 if ($search !== '') {
     $sql .= ' && status=:status';
 }
@@ -31,6 +32,7 @@ $stmt->bindValue(':start', $start, PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetchAll();
 
+
 // 通常表示・検索表示のページ数取得
 $sql = "select count(*) from quotations where company_id=:companyId && deleted is null";
 if ($search !== '') {
@@ -45,12 +47,32 @@ $stmt->execute();
 $maxPage = $stmt->fetch();
 $maxPage = ceil($maxPage['count(*)'] / 10);
 
-// 別テーブルレコード取得
+// カンパニーテーブル必要データ取得
 $sql = "select * from companies where id=:companyId";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $companyId, PDO::PARAM_INT);
 $stmt->execute();
 $resCmpanies = $stmt->fetch();
+
+// ?companyIdパラメーターいたずら対策
+if (empty($resCmpanies)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
+// ?pageパラメータいたずら対策
+if (isset($_GET['page'])) {
+    if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
+// ?searchパラメータいたずら対策
+if (isset($_GET['search'])) {
+    if ((int)$_GET['search'] !== 1 && (int)$_GET['search'] !== 2 && (int)$_GET['search'] !== 9) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">

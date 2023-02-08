@@ -11,7 +11,13 @@ $sql = "select prefix from companies where id=:companyId";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(':companyId', $_GET['companyId'], PDO::PARAM_INT);
 $stmt->execute();
-$resPrefix = $stmt->fetch();
+$resCompanies = $stmt->fetch();
+
+// ?companyIdパラメーターいたずら対策
+if (empty($resCompanies)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
 
 $sql = "select count(no) as cnt from quotations where company_id=:companyId";
 $stmt = $db->prepare($sql);
@@ -27,7 +33,7 @@ if ($res[0]['cnt'] > 99999999) {
      $_POST = '';
 }
 
-$no = $resPrefix['prefix'] .= str_pad($res[0]['cnt'], 8, '0', STR_PAD_LEFT);
+$no = $resCompanies['prefix'] .= str_pad($res[0]['cnt'], 8, '0', STR_PAD_LEFT);
 
 $values = [
     'title' => "",

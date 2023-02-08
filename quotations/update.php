@@ -13,6 +13,12 @@ $stmt->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
+// ?companyIdパラメーターいたずら対策
+if (empty($res)) {
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./../companies/list.php";</script>';
+}
+
 $no = $res['no'];
 
 if (!empty($_POST)) {
