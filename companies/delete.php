@@ -11,6 +11,12 @@ $stmt->bindValue(':id', (int)$_GET['id'], PDO::PARAM_INT);
 $stmt->execute();
 $res = $stmt->fetch();
 
+//クエリパラメータいたずら対策
+if ($res === false) {
+    header('Location: ./list.php');
+    exit();
+}
+
 // レコード削除部
 if (!empty($_POST)) {
     $sql = "update companies set deleted=NOW() where id=:id";
