@@ -13,8 +13,8 @@ $res = $stmt->fetch();
 
 //クエリパラメータいたずら対策
 if ($res === false) {
-    header('Location: ./list.php');
-    exit();
+    echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+    echo '<script>location.href="./list.php";</script>';
 }
 
 $id = $res['id'] ?? '';
