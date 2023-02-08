@@ -4,6 +4,14 @@ require_once('./../const/status.php');
 require_once('./../function/common.php');
 require_once('./../function/invoice.php');
 
+// ?pageパラメータいたずら対策
+if (isset($_GET['page'])) {
+    if ($_GET['page'] < 1) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./../companies/list.php";</script>';
+    }
+}
+
 // 通常表示・検索表示のレコード取得
 $sql = 'select * from quotations where company_id=:companyId && deleted is null';
 $companyId = $_GET['companyId'] ?? '';
@@ -61,7 +69,7 @@ if (empty($resCmpanies)) {
 }
 // ?pageパラメータいたずら対策
 if (isset($_GET['page'])) {
-    if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
+    if ($_GET['page'] > $maxPage) {
         echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
         echo '<script>location.href="./../companies/list.php";</script>';
     }

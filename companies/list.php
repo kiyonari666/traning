@@ -4,6 +4,14 @@ require_once('./../const/prefecture.php');
 require_once('./../function/common.php');
 require_once('./../function/company.php');
 
+// ?pageパラメータいたずら対策
+if (isset($_GET['page'])) {
+    if ($_GET['page'] < 1) {
+        echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
+        echo '<script>location.href="./list.php";</script>';
+    }
+}
+
 $sql = 'select * from companies where deleted is null';
 $search = $_GET['search'] ?? '';
 $page = $_GET['page'] ?? 1;
@@ -49,9 +57,9 @@ $stmt->execute();
 $maxPage = $stmt->fetch();
 $maxPage = ceil($maxPage['cnt'] / 10);
 
-//?pageパラメータいたずら対策
+// ?pageパラメータいたずら対策
 if (isset($_GET['page'])) {
-    if ($_GET['page'] < 1 || $_GET['page'] > $maxPage) {
+    if ($_GET['page'] > $maxPage) {
         echo '<script>alert("対応するデータがありません\nトップページへ移動します");</script>';
         echo '<script>location.href="./list.php";</script>';
     }
